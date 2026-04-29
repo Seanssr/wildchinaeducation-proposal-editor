@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WCE Proposal Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
+:root {
+  --accent: #DC7F34;
+  --accent-dark: #b8612a;
+  --accent-light: #f2e0d0;
+  --font-ui: 'Poppins', sans-serif;
+}
+/* NIGHT MODE (default) */
+body.night {
+  --ed-bg: #04293C;
+  --ed-panel: #063347;
+  --ed-border: rgba(220,127,52,0.22);
+  --ed-input: rgba(220,127,52,0.08);
+  --ed-input-border: rgba(220,127,52,0.32);
+  --ed-text: #e8f4f8;
+  --ed-muted: #7fb8cc;
+}
+/* DAY MODE */
+body.day {
+  --ed-bg: #fdf8f4;
+  --ed-panel: #ffffff;
+  --ed-border: rgba(220,127,52,0.22);
+  --ed-input: rgba(220,127,52,0.06);
+  --ed-input-border: rgba(220,127,52,0.3);
+  --ed-text: #2a1a0e;
+  --ed-muted: #8a5a30;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--font-ui);background:var(--ed-bg);color:var(--ed-text);display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{height:50px;background:var(--ed-panel);border-bottom:1px solid var(--ed-border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:0.75rem;}
+.tb-logo{width:30px;height:30px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;}
+.tb-title{font-size:0.78rem;font-weight:600;color:var(--ed-text);}
+.tb-title span{font-size:0.6rem;font-weight:400;color:var(--ed-muted);display:block;}
+.tb-divider{width:1px;height:22px;background:var(--ed-border);}
+.tb-info{font-size:0.72rem;color:var(--ed-muted);}
+.tb-info strong{color:var(--ed-text);}
+.tb-right{display:flex;align-items:center;gap:0.5rem;}
+.xbtn{display:inline-flex;align-items:center;gap:0.3rem;font-family:var(--font-ui);font-size:0.7rem;font-weight:600;padding:0.4em 0.9em;border-radius:4px;border:none;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em;}
+.xbtn:hover{transform:translateY(-1px);}
+.xbtn.save{background:rgba(255,255,255,0.07);color:var(--ed-text);border:1px solid var(--ed-input-border);}
+.xbtn.save:hover{background:rgba(255,255,255,0.12);}
+.xbtn.pdf{background:#4a2e14;color:#f5ede4;border:1px solid rgba(220,127,52,0.3);}
+.xbtn.pdf:hover{background:#5a3a1a;}
+.xbtn.share{background:rgba(220,127,52,0.18);color:var(--accent);border:1px solid rgba(220,127,52,0.4);}
+.xbtn.share:hover{background:rgba(220,127,52,0.28);}
+.xbtn.pptx{background:var(--accent);color:#fff;}
+.xbtn.pptx:hover{background:var(--accent-dark);}
+
+/* SHELL */
+.shell{display:flex;flex:1;overflow:hidden;}
+
+/* LEFT PANEL */
+.ed-panel{width:400px;min-width:300px;max-width:520px;background:var(--ed-panel);border-right:1px solid var(--ed-border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.ed-panel-hdr{padding:0.7rem 1rem 0.5rem;border-bottom:1px solid var(--ed-border);flex-shrink:0;}
+.ed-panel-hdr h2{font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ed-muted);}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--ed-border);flex-shrink:0;scrollbar-width:none;position:relative;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{font-family:var(--font-ui);font-size:0.64rem;font-weight:600;letter-spacing:0.03em;padding:0.6rem 0.8rem;background:none;border:none;color:var(--ed-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;}
+.tab:hover{color:var(--ed-text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+/* Hamburger menu for collapsed tabs */
+.tabs-hamburger{display:none;align-items:center;justify-content:space-between;width:100%;padding:0.5rem 1rem;cursor:pointer;user-select:none;border-bottom:1px solid var(--ed-border);background:var(--ed-panel);}
+.tabs-hamburger-label{font-size:0.64rem;font-weight:600;color:var(--accent);}
+.tabs-hamburger-icon{display:flex;flex-direction:column;gap:3px;}
+.tabs-hamburger-icon span{display:block;width:16px;height:2px;background:var(--ed-muted);border-radius:1px;transition:all 0.2s;}
+.tabs-dropdown{display:none;flex-direction:column;background:var(--ed-panel);border-bottom:1px solid var(--ed-border);z-index:50;}
+.tabs-dropdown.open{display:flex;}
+.tabs-dropdown .tab{border-bottom:1px solid var(--ed-border);border-left:3px solid transparent;padding:0.55rem 1rem;}
+.tabs-dropdown .tab.active{border-left-color:var(--accent);border-bottom-color:var(--ed-border);}
+.tabs-collapsed .tabs-hamburger{display:flex;}
+.tabs-collapsed .tab{display:none;}
+
+/* EDITOR CONTENT */
+.ed-content{flex:1;overflow-y:auto;padding:0.9rem 1rem 3rem;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.08) transparent;}
+.ed-content::-webkit-scrollbar{width:3px;}
+.ed-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px;}
+.tp{display:none;}
+.tp.active{display:block;}
+
+/* FIELD GROUPS */
+.fg{margin-bottom:1.1rem;}
+.fg-title{font-size:0.58rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:0.55rem;padding-bottom:0.35rem;border-bottom:1px solid var(--ed-border);}
+.field{margin-bottom:0.65rem;}
+.field label{display:block;font-size:0.64rem;font-weight:600;color:var(--ed-muted);margin-bottom:0.25rem;letter-spacing:0.03em;}
+.field input,.field textarea,.field select{width:100%;background:var(--ed-input);border:1px solid var(--ed-input-border);border-radius:4px;padding:0.45em 0.65em;font-family:var(--font-ui);font-size:0.75rem;color:var(--ed-text);outline:none;transition:border-color 0.15s;resize:vertical;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+.field textarea{min-height:60px;line-height:1.5;}
+.field select option{background:var(--ed-panel);color:var(--ed-text);}
+.field input[type="date"]{color-scheme:dark;}
+.field input[type="color"]{width:36px;height:28px;padding:2px;border-radius:4px;cursor:pointer;}
+
+/* UPLOAD AREA */
+.upload-area{border:1.5px dashed var(--ed-input-border);border-radius:5px;padding:0.7rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;position:relative;margin-top:0.3rem;}
+.upload-area:hover{border-color:var(--accent);background:rgba(220,127,52,0.05);}
+.upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-area .ui{font-size:0.65rem;color:var(--ed-muted);}
+.upload-area .ui strong{color:var(--accent);}
+.upload-area .ui svg{display:block;margin:0 auto 0.3rem;opacity:0.5;}
+.thumb{width:100%;height:64px;object-fit:cover;border-radius:3px;margin-top:0.4rem;display:none;}
+
+/* COLOR SWATCHES */
+.swatch-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.3rem;}
+.swatch{width:28px;height:28px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s,transform 0.15s;flex-shrink:0;}
+.swatch:hover{transform:scale(1.1);}
+.swatch.selected{border-color:#fff;}
+
+/* BRAND COLOR PICKER */
+.brand-opts{display:flex;gap:0.5rem;margin-top:0.3rem;}
+.brand-opt{flex:1;padding:0.5rem;border-radius:5px;border:2px solid transparent;cursor:pointer;text-align:center;transition:border-color 0.15s;}
+.brand-opt.selected{border-color:#fff;}
+.brand-opt .bswatch{width:100%;height:20px;border-radius:3px;margin-bottom:0.3rem;}
+.brand-opt span{font-size:0.6rem;font-weight:600;color:var(--ed-muted);}
+
+/* DAY CARDS */
+.day-card{background:rgba(220,127,52,0.06);border:1px solid var(--ed-border);border-radius:5px;margin-bottom:0.6rem;overflow:hidden;}
+.day-card-hdr{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.75rem;cursor:pointer;user-select:none;}
+.day-badge{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:0.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.day-card-hdr span{font-size:0.7rem;font-weight:600;color:var(--ed-text);flex:1;}
+.day-card-hdr .chev{font-size:0.6rem;color:var(--ed-muted);transition:transform 0.2s;}
+.day-card.collapsed .chev{transform:rotate(-90deg);}
+.day-card.collapsed .day-fields{display:none;}
+.day-fields{padding:0 0.75rem 0.75rem;}
+
+/* ACTIVITY CATEGORY COLORS */
+.act-cat{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem;}
+.act-tag{display:inline-flex;align-items:center;gap:0.25rem;font-size:0.62rem;font-weight:600;padding:0.2em 0.55em;border-radius:3px;cursor:pointer;border:1.5px solid transparent;transition:opacity 0.15s;}
+.act-tag.selected{border-color:rgba(255,255,255,0.4);}
+.act-tag:not(.selected){opacity:0.5;}
+
+/* PROGRAM CARDS */
+.prog-card{background:rgba(220,127,52,0.06);border:1px solid var(--ed-border);border-radius:5px;padding:0.7rem;margin-bottom:0.6rem;}
+.prog-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.prog-card-hdr span{font-size:0.68rem;font-weight:600;color:var(--ed-text);}
+.prog-card-hdr button{font-family:var(--font-ui);font-size:0.6rem;background:rgba(255,80,80,0.15);color:#ff8080;border:none;border-radius:3px;padding:0.2em 0.5em;cursor:pointer;}
+
+/* FOOTER LINK EDITOR */
+.footer-link-row{display:flex;gap:0.4rem;margin-bottom:0.4rem;align-items:center;}
+.footer-link-row input{flex:1;}
+.footer-link-row button{font-family:var(--font-ui);font-size:0.6rem;background:rgba(255,80,80,0.15);color:#ff8080;border:none;border-radius:3px;padding:0.3em 0.5em;cursor:pointer;flex-shrink:0;}
+.add-link-btn{font-family:var(--font-ui);font-size:0.65rem;font-weight:600;background:rgba(255,255,255,0.06);color:var(--ed-muted);border:1px dashed var(--ed-input-border);border-radius:4px;padding:0.35em 0.7em;cursor:pointer;width:100%;margin-top:0.3rem;transition:all 0.15s;}
+.add-link-btn:hover{color:var(--ed-text);border-color:var(--accent);}
+
+/* COUNTER */
+.prog-counter{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}
+.prog-counter label{font-size:0.64rem;font-weight:600;color:var(--ed-muted);}
+.prog-counter .cnt-btns{display:flex;gap:0.3rem;}
+.cnt-btn{width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,0.07);border:1px solid var(--ed-input-border);color:var(--ed-text);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.cnt-btn:hover{background:rgba(255,255,255,0.14);}
+.cnt-display{font-size:0.78rem;font-weight:700;color:var(--ed-text);min-width:20px;text-align:center;}
+
+/* RIGHT PANEL */
+.prev-panel{flex:1;display:flex;flex-direction:column;background:var(--ed-bg);overflow:hidden;}
+.prev-toolbar{height:42px;background:var(--ed-panel);border-bottom:1px solid var(--ed-border);display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;}
+.prev-label{font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ed-muted);}
+.dev-toggle{display:flex;background:rgba(255,255,255,0.05);border-radius:4px;padding:2px;gap:2px;}
+.dev-btn{font-family:var(--font-ui);font-size:0.62rem;font-weight:600;padding:0.28em 0.65em;border:none;border-radius:3px;cursor:pointer;background:none;color:var(--ed-muted);display:flex;align-items:center;gap:0.25rem;transition:all 0.15s;}
+.dev-btn.active{background:var(--accent);color:#fff;}
+.dev-btn:not(.active):hover{color:var(--ed-text);}
+.prev-url{background:rgba(255,255,255,0.05);border:1px solid var(--ed-border);border-radius:4px;padding:0.28em 0.7em;font-size:0.64rem;color:var(--ed-muted);min-width:180px;text-align:center;}
+.ref-btn{font-family:var(--font-ui);font-size:0.64rem;font-weight:600;padding:0.28em 0.65em;background:rgba(255,255,255,0.05);border:1px solid var(--ed-border);border-radius:4px;color:var(--ed-muted);cursor:pointer;transition:all 0.15s;}
+.ref-btn:hover{color:var(--ed-text);background:rgba(255,255,255,0.1);}
+.prev-viewport{flex:1;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:1.25rem;background:var(--ed-bg);}
+.pw{transition:width 0.3s cubic-bezier(0.16,1,0.3,1);}
+.pw.desktop{width:100%;max-width:1200px;min-width:700px;}
+.pw.mobile{width:390px;min-width:390px;}
+.mobile-chrome{display:none;background:var(--ed-panel);border-radius:44px;padding:10px;box-shadow:0 0 0 2px var(--accent-dark),0 20px 60px rgba(0,0,0,0.4);}
+.pw.mobile .mobile-chrome{display:block;}
+.mobile-notch{width:110px;height:24px;background:var(--ed-panel);border-radius:0 0 16px 16px;margin:0 auto 6px;}
+.prev-iframe{width:100%;border:none;background:#fff;display:block;}
+.pw.desktop .prev-iframe{height:calc(100vh - 50px - 42px - 2.5rem - 42px);min-height:480px;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+.pw.mobile .prev-iframe{height:760px;border-radius:32px;}
+
+/* STATUS */
+.statusbar{height:22px;background:var(--ed-panel);border-top:1px solid var(--ed-border);display:flex;align-items:center;padding:0 1rem;gap:1.5rem;flex-shrink:0;}
+.si{font-size:0.58rem;color:var(--ed-muted);display:flex;align-items:center;gap:0.3rem;}
+.sdot{width:5px;height:5px;border-radius:50%;background:#7EC8A0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ed-panel);border:1px solid var(--ed-border);border-left:3px solid var(--accent);color:var(--ed-text);font-size:0.75rem;font-weight:500;padding:0.6rem 1.1rem;border-radius:5px;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:9999;opacity:0;transition:opacity 0.22s,transform 0.22s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* SDG SWATCHES */
+.sdg-swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:0.3rem;margin-top:0.3rem;}
+.sdg-sw{width:100%;aspect-ratio:1;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s,transform 0.15s;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;}
+.sdg-sw:hover{transform:scale(1.1);}
+.sdg-sw.selected{border-color:#fff;}
+
+/* DAY MODE OVERRIDES */
+body.day .day-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .prog-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .xbtn.save{background:rgba(220,127,52,0.1);color:var(--ed-text);border-color:rgba(220,127,52,0.3);}
+body.day .xbtn.pdf{background:#f5e8d8;color:#5a3010;border-color:rgba(220,127,52,0.3);}
+body.day .cnt-btn{background:rgba(220,127,52,0.1);border-color:rgba(220,127,52,0.25);}
+body.day .add-link-btn{background:rgba(220,127,52,0.06);color:var(--ed-muted);}
+body.day .footer-link-row button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .prog-card-hdr button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .dev-toggle{background:rgba(220,127,52,0.1);}
+body.day .prev-url{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn:hover{background:rgba(220,127,52,0.18);}
+body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
+</style>
+</head>
+<body class="night">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo" id="tb-logo-mark" style="background:#DC7F34;width:auto;padding:0 6px;font-size:0.72rem;letter-spacing:0.02em;white-space:nowrap;">碧山教育</div>
+    <div class="tb-title">WildChina Education <span>Proposal Editor</span></div>
+    <div class="tb-divider"></div>
+    <div class="tb-info"><strong id="tb-prog">Charms of the Capital</strong> &nbsp;·&nbsp; <span id="tb-client">[Client School]</span></div>
+  </div>
+  <div class="tb-right">
+    <button class="xbtn save" id="theme-toggle" onclick="toggleTheme()" title="Toggle Day/Night Mode" style="padding:0.4em 0.6em;">
+      <svg id="theme-icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <svg id="theme-icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="xbtn save" onclick="saveDraft()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save Draft
+    </button>
+    <button class="xbtn share" onclick="shareHTML()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share HTML
+    </button>
+    <button class="xbtn pdf" onclick="exportPDF()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Export PDF
+    </button>
+    <button class="xbtn pptx" onclick="exportPPTX()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Export PPTX
+    </button>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+
+<!-- LEFT PANEL -->
+<div class="ed-panel">
+  <div class="ed-panel-hdr"><h2>Editor Workspace</h2></div>
+  <div class="tabs" id="tabs-bar">
+    <button class="tab active" onclick="switchTab('meta')">Proposal Info</button>
+    <button class="tab" onclick="switchTab('hero')">Hero</button>
+    <button class="tab" onclick="switchTab('overview')">Overview</button>
+    <button class="tab" onclick="switchTab('highlights')">Highlights</button>
+    <button class="tab" onclick="switchTab('itinerary')">Itinerary</button>
+    <button class="tab" onclick="switchTab('outcomes')">Learning Outcomes</button>
+    <button class="tab" onclick="switchTab('accommodation')">Accommodation</button>
+    <button class="tab" onclick="switchTab('transportation')">Transportation</button>
+    <button class="tab" onclick="switchTab('quotation')">Quotation</button>
+    <button class="tab" onclick="switchTab('programs')">Explore More</button>
+    <button class="tab" onclick="switchTab('footer')">Footer</button>
+  </div>
+  <!-- Hamburger collapsed tabs (shown when panel is too narrow) -->
+  <div id="tabs-collapsed-wrap" style="display:none;flex-direction:column;">
+    <div class="tabs-hamburger" id="tabs-hamburger-btn" onclick="toggleTabsDropdown()">
+      <span class="tabs-hamburger-label" id="tabs-hamburger-label">Proposal Info</span>
+      <div class="tabs-hamburger-icon">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="tabs-dropdown" id="tabs-dropdown">
+      <button class="tab active" onclick="switchTab('meta');closeTabsDropdown()">Proposal Info</button>
+      <button class="tab" onclick="switchTab('hero');closeTabsDropdown()">Hero</button>
+      <button class="tab" onclick="switchTab('overview');closeTabsDropdown()">Overview</button>
+      <button class="tab" onclick="switchTab('highlights');closeTabsDropdown()">Highlights</button>
+      <button class="tab" onclick="switchTab('itinerary');closeTabsDropdown()">Itinerary</button>
+      <button class="tab" onclick="switchTab('outcomes');closeTabsDropdown()">Learning Outcomes</button>
+      <button class="tab" onclick="switchTab('accommodation');closeTabsDropdown()">Accommodation</button>
+      <button class="tab" onclick="switchTab('transportation');closeTabsDropdown()">Transportation</button>
+      <button class="tab" onclick="switchTab('quotation');closeTabsDropdown()">Quotation</button>
+      <button class="tab" onclick="switchTab('programs');closeTabsDropdown()">Explore More</button>
+      <button class="tab" onclick="switchTab('footer');closeTabsDropdown()">Footer</button>
+    </div>
+  </div>
+
+  <div class="ed-content">
+
+    <!-- ═══ TAB: PROPOSAL INFO ═══ -->
+    <div class="tp active" id="tp-meta">
+      <div class="fg">
+        <div class="fg-title">Brand</div>
+        <div class="field">
+          <label>Proposal Logo</label>
+          <div class="upload-area" onclick="void(0)">
+            <input type="file" id="upload-logo" accept="image/*" onchange="handleImg('logo',this)"/>
+            <div class="ui">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <strong>Upload logo</strong> (PNG/SVG recommended)
+            </div>
+            <img class="thumb" id="thumb-logo"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-title">Client Details</div>
+        <div class="field">
+          <label>Client School Name</label>
+          <input type="text" id="f-client" placeholder="e.g. Dulwich College Beijing" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Proposal Date <span style="color:var(--accent);font-size:0.6rem;">(auto-set to today)</span></label>
+          <input type="text" id="f-date" readonly style="opacity:0.6;cursor:not-allowed;"/>
+        </div>
+        <div class="field">
+          <label>BD Owner Name</label>
+          <input type="text" id="f-bd-name" placeholder="Tom Lewis" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>BD Owner Email</label>
+          <input type="email" id="f-bd-email" placeholder="thomas.lewis@wildchina.com" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>BD Owner Phone</label>
+          <input type="text" id="f-bd-phone" placeholder="15050417044" oninput="liveUpdate()"/>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-title">Program at a Glance</div>
+        <div class="field">
+          <label>Program Name</label>
+          <input type="text" id="f-prog-name" placeholder="e.g. Charms of the Capital" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Destination / Location</label>
+          <input type="text" id="f-location" placeholder="e.g. Beijing, China" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Number of Days</label>
+          <input type="number" id="f-num-days" value="5" min="1" max="21" oninput="syncDays();liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Travel Dates</label>
+          <div style="display:flex;gap:0.4rem;align-items:center;">
+            <input type="date" id="f-date-start" oninput="liveUpdate()" style="flex:1;"/>
+            <span style="font-size:0.7rem;color:var(--ed-muted);">to</span>
+            <input type="date" id="f-date-end" oninput="liveUpdate()" style="flex:1;"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Group Size</label>
+          <input type="text" id="f-group-size" placeholder="e.g. 24 students + 3 teachers" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Accommodation</label>
+          <input type="text" id="f-accommodation" value="4-Star Hotels" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Meals Included</label>
+          <input type="text" id="f-meals" value="B / L / D Included" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Investment / Price</label>
+          <input type="text" id="f-price" placeholder="e.g. USD 1,850 per student" oninput="liveUpdate()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: HERO ═══ -->
+    <div class="tp" id="tp-hero">
+      <div class="fg">
+        <div class="fg-title">Hero Content</div>
+        <div class="field">
+          <label>Program Title</label>
+          <input type="text" id="f-hero-title" placeholder="e.g. Charms of the Capital" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Hero Description</label>
+          <textarea id="f-hero-desc" oninput="liveUpdate()">Immerse yourself in Beijing's living history as you explore hidden hutongs, hike the Great Wall, and connect with locals through martial arts, community service, and hands-on cultural experiences that bring the capital's rich heritage to life.</textarea>
+        </div>
+        <div class="field">
+          <label>Client / School Name (shown in hero)</label>
+          <input type="text" id="f-hero-client" placeholder="e.g. Dulwich College Beijing" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Primary CTA Button</label>
+          <input type="text" id="f-cta1" value="Explore the Program" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Secondary CTA Button</label>
+          <input type="text" id="f-cta2" value="View Itinerary" oninput="liveUpdate()"/>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Hero Images</div>
+        <div class="field">
+          <label>Hero Background Image</label>
+          <div class="upload-area">
+            <input type="file" id="upload-hero-bg" accept="image/*" onchange="handleImg('hero-bg',this)"/>
+            <div class="ui">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <strong>Upload</strong> background (1600×600px)
+            </div>
+            <img class="thumb" id="thumb-hero-bg"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Destination Map Image (transparent PNG)</label>
+          <div class="upload-area">
+            <input type="file" id="upload-hero-map" accept="image/*" onchange="handleImg('hero-map',this)"/>
+            <div class="ui">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <strong>Upload</strong> map PNG (transparent bg)
+            </div>
+            <img class="thumb" id="thumb-hero-map"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: HIGHLIGHTS ═══ -->
+    <div class="tp" id="tp-highlights">
+      <div class="fg">
+        <div class="fg-title">Section Heading</div>
+        <div class="field">
+          <label>Section Label</label>
+          <input type="text" id="f-hl-label" value="Key Experiences" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Section Title</label>
+          <input type="text" id="f-hl-title" value="Program Highlights" oninput="liveUpdate()"/>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Number of Highlights</div>
+        <div class="prog-counter">
+          <label>Highlights to show:</label>
+          <div class="cnt-btns">
+            <button class="cnt-btn" onclick="changeHlCount(-1)">−</button>
+            <span class="cnt-display" id="hl-count-display">3</span>
+            <button class="cnt-btn" onclick="changeHlCount(1)">+</button>
+          </div>
+          </div>
+      </div>
+      <div id="highlights-editor"></div>
+    </div>
+
+    <!-- ═══ TAB: OVERVIEW ═══ -->
+    <div class="tp" id="tp-overview">
+      <div class="fg">
+        <div class="fg-title">Program Overview Text</div>
+        <div class="field">
+          <label>Section Heading</label>
+          <input type="text" id="f-ov-heading" value="Experience the Heart of Beijing" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Paragraph 1</label>
+          <textarea id="f-ov-p1" oninput="liveUpdate()">Experience the heart of Beijing through interactive adventures — from racing through ancient hutongs and exploring the Forbidden City to practicing calligraphy, Kung Fu, and crafting your own Peking Opera mask.</textarea>
+        </div>
+        <div class="field">
+          <label>Paragraph 2</label>
+          <textarea id="f-ov-p2" oninput="liveUpdate()">Hike the Great Wall at Mutianyu, savor iconic local dishes like Peking duck and mutton hotpot, and connect with locals through dumpling-making, square dancing, and community surveys.</textarea>
+        </div>
+        <div class="field">
+          <label>Paragraph 3</label>
+          <textarea id="f-ov-p3" oninput="liveUpdate()">Wrap up your journey by volunteering at a local orphanage, leaving with unforgettable memories and a deeper understanding of China's culture, history, and people.</textarea>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Gallery Images</div>
+        <div id="gallery-editor"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: ITINERARY ═══ -->
+    <div class="tp" id="tp-itinerary">
+      <div class="fg">
+        <div class="fg-title">Section Header</div>
+        <div class="field">
+          <label>Section Note</label>
+          <textarea id="f-itin-note" oninput="liveUpdate()" style="min-height:50px;">All programs are fully customizable. The schedule below is a representative itinerary — contact us to tailor it to your school's curriculum and goals.</textarea>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Activity Category Colors</div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem;font-size:0.65rem;color:var(--ed-muted);">
+          <div style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:2px;background:#E8A87C;display:inline-block;"></span> Culture</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:2px;background:#7CB9E8;display:inline-block;"></span> Service</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:2px;background:#7EC8A0;display:inline-block;"></span> Outdoor</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:2px;background:#B39DDB;display:inline-block;"></span> STEAM</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;"><span style="width:10px;height:10px;border-radius:2px;background:#F48FB1;display:inline-block;"></span> Team Building</div>
+        </div>
+      </div>
+      <div id="itinerary-editor"></div>
+    </div>
+
+    <!-- ═══ TAB: LEARNING OUTCOMES ═══ -->
+    <div class="tp" id="tp-outcomes">
+      <div class="fg">
+        <div class="fg-title">Section Header</div>
+        <div class="field">
+          <label>Section Label</label>
+          <input type="text" id="f-sdg-label" value="Learning Outcomes" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Section Title (editable)</label>
+          <input type="text" id="f-sdg-title" value="UN SDGs in Focus" oninput="liveUpdate()"/>
+        </div>
+      </div>
+      <div id="sdg-editor"></div>
+    </div>
+
+    <!-- ═══ TAB: ACCOMMODATION ═══ -->
+    <div class="tp" id="tp-accommodation">
+      <div class="fg">
+        <div class="fg-title">Section Toggle</div>
+        <div class="field" style="display:flex;align-items:center;gap:0.6rem;">
+          <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+            <input type="checkbox" id="f-accom-show" onchange="liveUpdate()" checked style="width:auto;accent-color:var(--accent);"/>
+            Show Accommodation section in proposal
+          </label>
+        </div>
+      </div>
+      <div id="accom-options-editor"></div>
+      <button class="add-link-btn" onclick="addAccomOption()" style="margin-top:0.4rem;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:0.25rem;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Accommodation Option
+      </button>
+    </div>
+
+    <!-- ═══ TAB: TRANSPORTATION ═══ -->
+    <div class="tp" id="tp-transportation">
+      <div class="fg">
+        <div class="fg-title">Section Toggle</div>
+        <div class="field" style="display:flex;align-items:center;gap:0.6rem;">
+          <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+            <input type="checkbox" id="f-trans-show" onchange="liveUpdate()" checked style="width:auto;accent-color:var(--accent);"/>
+            Show Transportation section in proposal
+          </label>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Transport Legs</div>
+        <div id="transport-editor"></div>
+        <button class="add-link-btn" onclick="addTransportLeg()">+ Add Transport Leg</button>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: QUOTATION ═══ -->
+    <div class="tp" id="tp-quotation">
+      <div class="fg">
+        <div class="fg-title">Section Toggle</div>
+        <div class="field" style="display:flex;align-items:center;gap:0.6rem;">
+          <label style="margin:0;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+            <input type="checkbox" id="f-quot-show" onchange="liveUpdate()" checked style="width:auto;accent-color:var(--accent);"/>
+            Show Quotation section in proposal
+          </label>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Program Pricing Intro</div>
+        <div class="field"><label>Pricing Description</label><textarea id="f-quot-desc" oninput="liveUpdate()" style="min-height:65px;">Your journey starts in Beijing and ends in Beijing. Your quotation has been prepared for 5 days.</textarea></div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Cost Type</div>
+        <div class="field">
+          <label>Pricing Mode</label>
+          <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;cursor:pointer;margin:0;">
+              <input type="radio" name="quot-mode" id="quot-mode-set" value="set" onchange="liveUpdate()" checked style="width:auto;accent-color:var(--accent);"/> Fixed Price
+            </label>
+            <label style="display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;cursor:pointer;margin:0;">
+              <input type="radio" name="quot-mode" id="quot-mode-tiered" value="tiered" onchange="liveUpdate()" style="width:auto;accent-color:var(--accent);"/> Tiered Pricing
+            </label>
+          </div>
+        </div>
+        <div id="quot-set-fields">
+          <div class="field"><label>Cost (per student)</label><input type="text" id="f-quot-cost" placeholder="e.g. RMB 3,800 per student" oninput="liveUpdate()"/></div>
+        </div>
+        <div id="quot-tiered-fields" style="display:none;">
+          <div id="quot-tiers-editor"></div>
+          <button class="add-link-btn" onclick="addQuotTier()">+ Add Tier Row</button>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">What's Included (✓)</div>
+        <div id="quot-included-editor"></div>
+        <button class="add-link-btn" onclick="addQuotItem('included')">+ Add Item</button>
+      </div>
+      <div class="fg">
+        <div class="fg-title">What's Not Included (✕)</div>
+        <div id="quot-excluded-editor"></div>
+        <button class="add-link-btn" onclick="addQuotItem('excluded')">+ Add Item</button>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: EXPLORE MORE ═══ -->
+    <div class="tp" id="tp-programs">
+      <div class="fg">
+        <div class="fg-title">Section Header</div>
+        <div class="field">
+          <label>Section Label</label>
+          <input type="text" id="f-ep-label" value="Explore More" oninput="liveUpdate()"/>
+        </div>
+        <div class="field">
+          <label>Section Title</label>
+          <input type="text" id="f-ep-title" value="Other Popular Programs" oninput="liveUpdate()"/>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Number of Programs</div>
+        <div class="prog-counter">
+          <label>Programs to show:</label>
+          <div class="cnt-btns">
+            <button class="cnt-btn" onclick="changeProgCount(-1)">−</button>
+            <span class="cnt-display" id="prog-count-display">3</span>
+            <button class="cnt-btn" onclick="changeProgCount(1)">+</button>
+          </div>
+          <span style="font-size:0.62rem;color:var(--ed-muted);">(3–5)</span>
+        </div>
+      </div>
+      <div id="programs-editor"></div>
+    </div>
+
+    <!-- ═══ TAB: FOOTER ═══ -->
+    <div class="tp" id="tp-footer">
+      <div class="fg">
+        <div class="fg-title">CTA Banner</div>
+        <div class="field"><label>CTA Heading</label><input type="text" id="f-cta-h" value="Let us create a custom program for your students." oninput="liveUpdate()"/></div>
+        <div class="field"><label>CTA Body</label><textarea id="f-cta-body" oninput="liveUpdate()">Every WildChina Education program is fully tailored to your school's curriculum, schedule, and budget. Our team will work with you from first enquiry to final debrief.</textarea></div>
+        <div class="field"><label>Primary Button</label><input type="text" id="f-cta-btn1" value="Contact Us for Full Detail" oninput="liveUpdate()"/></div>
+        <div class="field"><label>Secondary Button</label><input type="text" id="f-cta-btn2" value="Visit Our Website" oninput="liveUpdate()"/></div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Footer Brand</div>
+        <div class="field"><label>Brand Tagline</label><textarea id="f-ft-tag" oninput="liveUpdate()" style="min-height:50px;">Creating life-changing experiences outside of the classroom since 2000. Experiential education programs across China for international schools.</textarea></div>
+        <div class="field"><label>Contact Email</label><input type="email" id="f-ft-email" value="info@wildchinaeducation.com" oninput="liveUpdate()"/></div>
+        <div class="field"><label>Office Locations</label><input type="text" id="f-ft-offices" value="Beijing · Shanghai · Chengdu · Hong Kong" oninput="liveUpdate()"/></div>
+        <div class="field"><label>LinkedIn URL</label><input type="url" id="f-ft-li" value="https://www.linkedin.com/company/wildchinaeducation" oninput="liveUpdate()"/></div>
+        <div class="field"><label>YouTube URL</label><input type="url" id="f-ft-yt" value="https://www.youtube.com/@wildchinaeducation" oninput="liveUpdate()"/></div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Footer Column 1 — Browse Programs</div>
+        <div class="field"><label>Column Title</label><input type="text" id="f-fc1-title" value="Browse Programs" oninput="liveUpdate()"/></div>
+        <div id="fc1-links"></div>
+        <button class="add-link-btn" onclick="addFooterLink('fc1')">+ Add Link</button>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Footer Column 2 — Useful Info</div>
+        <div class="field"><label>Column Title</label><input type="text" id="f-fc2-title" value="Useful Info" oninput="liveUpdate()"/></div>
+        <div id="fc2-links"></div>
+        <button class="add-link-btn" onclick="addFooterLink('fc2')">+ Add Link</button>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Footer Column 3 — Contact</div>
+        <div class="field"><label>Column Title</label><input type="text" id="f-fc3-title" value="Contact Us" oninput="liveUpdate()"/></div>
+        <div id="fc3-links"></div>
+        <button class="add-link-btn" onclick="addFooterLink('fc3')">+ Add Link</button>
+      </div>
+    </div>
+
+  </div><!-- /ed-content -->
+</div><!-- /ed-panel -->
+
+<!-- RIGHT PANEL -->
+<div class="prev-panel">
+  <div class="prev-toolbar">
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <span class="prev-label">Live Preview</span>
+      <div class="dev-toggle">
+        <button class="dev-btn active" id="btn-desk" onclick="setDevice('desktop')">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Desktop
+        </button>
+        <button class="dev-btn" id="btn-mob" onclick="setDevice('mobile')">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Mobile
+        </button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      
+      <button class="ref-btn" onclick="refreshPreview()">↺ Refresh</button>
+    </div>
+  </div>
+  <div class="prev-viewport">
+    <div class="pw desktop" id="pw">
+      <div class="mobile-chrome">
+        <div class="mobile-notch"></div>
+        <iframe id="ifr-mob" class="prev-iframe" style="display:none;height:760px;border-radius:32px;"></iframe>
+      </div>
+      <iframe id="ifr-desk" class="prev-iframe"></iframe>
+    </div>
+  </div>
+</div>
+
+</div><!-- /shell -->
+
+<div class="statusbar">
+  <div class="si"><div class="sdot"></div> Live sync</div>
+  <div class="si" id="si-saved">Draft auto-saved</div>
+  <div class="si">Georgia + Poppins</div>
+  <div class="si" id="si-brand">WildChina Education</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+const imgs = {};
+let currentDevice = 'desktop';
+let debounce = null;
+let currentBrand = 'wce';
+let progCount = 3;
+let numDays = 5;
+let hlCount = 3;
+
+// ═══════════════════════════════════════════════════════════════════
+// ACCOMMODATION EDITOR
+// ═══════════════════════════════════════════════════════════════════
+let accomCount = 0;
+
+const defaultAccoms = [
+  {
+    name: 'Novotel Beijing Peace',
+    addr: '3 Jinyu Hutong, Dongcheng District, Beijing',
+    duration: 'Day 1–5, 4 nights in total',
+    safety: 'All accommodations have been risk-assessed. WildChina Education Staff will assist with check in upon arrival.',
+    note: 'We aim to reserve this hotel or a similar option, subject to availability.'
+  }
+];
+
+function initAccomEditor() {
+  accomCount = 0;
+  const el = document.getElementById('accom-options-editor');
+  el.innerHTML = '';
+  defaultAccoms.forEach(a => addAccomOptionRow(a));
+}
+
+function addAccomOption() {
+  addAccomOptionRow({name:'',addr:'',duration:'',safety:'All accommodations have been risk-assessed. WildChina Education Staff will assist with check in upon arrival.',note:''});
+  liveUpdate();
+}
+
+function addAccomOptionRow(a) {
+  const idx = accomCount++;
+  const el = document.getElementById('accom-options-editor');
+  const card = document.createElement('div');
+  card.className = 'day-card';
+  card.id = 'accom-card-' + idx;
+  card.style.marginBottom = '0.6rem';
+  card.innerHTML = `
+    <div class="day-card-hdr" onclick="this.closest('.day-card').classList.toggle('collapsed')">
+      <div class="day-badge" style="background:var(--accent);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span>${a.name || 'Accommodation Option ' + (idx+1)}</span>
+      <button style="font-family:var(--font-ui);font-size:0.6rem;background:rgba(255,80,80,0.15);color:#ff8080;border:none;border-radius:3px;padding:0.2em 0.5em;cursor:pointer;margin-left:auto;" onclick="event.stopPropagation();this.closest('.day-card').remove();liveUpdate()">Remove</button>
+      <span class="chev">▼</span>
+    </div>
+    <div class="day-fields">
+      <div style="background:var(--ed-input);border:1px solid var(--ed-input-border);border-radius:5px;padding:0.75rem;margin-bottom:0.6rem;">
+        <div class="field" style="margin-bottom:0.5rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Hotel Name
+          </label>
+          <input type="text" class="ac-name" value="${a.name||''}" placeholder="e.g. Novotel Beijing Peace" oninput="this.closest('.day-card').querySelector('span').textContent=this.value||'Accommodation Option';liveUpdate()"/>
+        </div>
+        <div class="field" style="margin-bottom:0.5rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Address
+          </label>
+          <input type="text" class="ac-addr" value="${a.addr||''}" placeholder="e.g. 3 Jinyu Hutong, Dongcheng District" oninput="liveUpdate()"/>
+        </div>
+        <div class="field" style="margin-bottom:0.5rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Duration / Stay
+          </label>
+          <input type="text" class="ac-duration" value="${a.duration||''}" placeholder="e.g. Day 1–5, 4 nights" oninput="liveUpdate()"/>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label style="display:flex;align-items:center;gap:0.4rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Safety Assurance
+          </label>
+          <input type="text" class="ac-safety" value="${a.safety||''}" placeholder="Safety assurance text" oninput="liveUpdate()"/>
+        </div>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:0.4rem;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Availability Note
+        </label>
+        <input type="text" class="ac-note" value="${a.note||''}" placeholder="e.g. Subject to availability at time of booking." oninput="liveUpdate()"/>
+      </div>
+      <div class="field">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;">
+          <label style="margin:0;">Hotel Images</label>
+          <button class="add-link-btn" style="width:auto;padding:0.25em 0.6em;font-size:0.6rem;margin:0;" onclick="addAccomImgSlot(${idx})">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:2px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Photo
+          </button>
+        </div>
+        <div id="accom-imgs-${idx}" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;">
+          <!-- slots added dynamically -->
+        </div>
+      </div>
+    </div>`;
+  el.appendChild(card);
+}
+
+// Track how many image slots each accommodation has
+const accomImgSlotCount = {};
+
+function addAccomImgSlot(accomIdx) {
+  const container = document.getElementById('accom-imgs-' + accomIdx);
+  if (!container) return;
+  if (!accomImgSlotCount[accomIdx]) accomImgSlotCount[accomIdx] = 0;
+  const slot = accomImgSlotCount[accomIdx]++;
+  const wrap = document.createElement('div');
+  wrap.className = 'upload-area';
+  wrap.style.cssText = 'padding:0.5rem;position:relative;';
+  wrap.id = 'accom-slot-' + accomIdx + '-' + slot;
+  wrap.innerHTML = `
+    <input type="file" accept="image/*" class="ac-img-input" data-slot="${slot}" onchange="handleAccomImg(this,${accomIdx},${slot})"/>
+    <div class="ui" style="font-size:0.58rem;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <strong>Photo</strong>
+    </div>
+    <img class="thumb" id="thumb-accom-${accomIdx}-${slot}" style="display:none;"/>
+    <button onclick="removeAccomImgSlot(${accomIdx},${slot})" title="Remove photo" style="position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:rgba(255,80,80,0.85);color:#fff;border:none;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;">✕</button>`;
+  container.appendChild(wrap);
+}
+
+function removeAccomImgSlot(accomIdx, slot) {
+  const wrap = document.getElementById('accom-slot-' + accomIdx + '-' + slot);
+  if (wrap) wrap.remove();
+  delete imgs['accom-' + accomIdx + '-' + slot];
+  liveUpdate();
+}
+
+function handleAccomImg(input, accomIdx, slot) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const key = 'accom-' + accomIdx + '-' + slot;
+    imgs[key] = e.target.result;
+    const th = document.getElementById('thumb-accom-' + accomIdx + '-' + slot);
+    if (th) { th.src = e.target.result; th.style.display = 'block'; }
+    liveUpdate();
+    showToast('Image uploaded: ' + file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TRANSPORT EDITOR
+// ═══════════════════════════════════════════════════════════════════
+const defaultTransport = [
+  {date:'Day 1', type:'Flight', number:'CA1234', route:'Shanghai → Beijing', dep:'08:00', arr:'10:15', price:''},
+  {date:'Day 5', type:'Flight', number:'CA1235', route:'Beijing → Shanghai', dep:'16:30', arr:'18:45', price:''}
+];
+
+function initTransportEditor() {
+  const el = document.getElementById('transport-editor');
+  el.innerHTML = '';
+  defaultTransport.forEach((t,i) => addTransportLegRow(t));
+}
+
+function addTransportLeg() {
+  addTransportLegRow({date:'',type:'Train',number:'',route:'',dep:'',arr:'',price:''});
+  liveUpdate();
+}
+
+function addTransportLegRow(t) {
+  const el = document.getElementById('transport-editor');
+  const row = document.createElement('div');
+  row.className = 'day-card';
+  row.style.marginBottom = '0.5rem';
+  row.innerHTML = `
+    <div style="padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:0.68rem;font-weight:600;color:var(--ed-text);">Transport Leg</span>
+      <button style="font-family:var(--font-ui);font-size:0.6rem;background:rgba(255,80,80,0.15);color:#ff8080;border:none;border-radius:3px;padding:0.2em 0.5em;cursor:pointer;" onclick="this.closest('.day-card').remove();liveUpdate()">✕ Remove</button>
+    </div>
+    <div style="padding:0 0.75rem 0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
+      <div class="field"><label>Travel Date</label><input type="text" class="tr-date" value="${t.date||''}" placeholder="e.g. Day 1" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Type</label>
+        <select class="tr-type" onchange="liveUpdate()">
+          <option value="Flight"${t.type==='Flight'?' selected':''}>Flight</option>
+          <option value="Train"${t.type==='Train'?' selected':''}>Train</option>
+          <option value="Bus"${t.type==='Bus'?' selected':''}>Bus</option>
+          <option value="Ferry"${t.type==='Ferry'?' selected':''}>Ferry</option>
+        </select>
+      </div>
+      <div class="field"><label>Flight/Train No.</label><input type="text" class="tr-num" value="${t.number||''}" placeholder="e.g. G1234" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Route</label><input type="text" class="tr-route" value="${t.route||''}" placeholder="e.g. Beijing → Shanghai" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Departure Time</label><input type="text" class="tr-dep" value="${t.dep||''}" placeholder="e.g. 08:30" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Arrival Time</label><input type="text" class="tr-arr" value="${t.arr||''}" placeholder="e.g. 12:45" oninput="liveUpdate()"/></div>
+      <div class="field" style="grid-column:1/-1;"><label>Estimated Price (optional)</label><input type="text" class="tr-price" value="${t.price||''}" placeholder="e.g. RMB 580 per person" oninput="liveUpdate()"/></div>
+    </div>`;
+  el.appendChild(row);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// QUOTATION EDITOR
+// ═══════════════════════════════════════════════════════════════════
+const defaultIncluded = [
+  'All ground transportation within the program',
+  'Accommodation (4-star hotels, twin-share)',
+  'All meals as specified in the itinerary (B/L/D)',
+  'All entrance fees and activity costs',
+  'Dedicated WildChina Education program leader',
+  '24/7 emergency support throughout the program'
+];
+const defaultExcluded = [
+  'International or domestic flights to/from program start/end city',
+  'Travel insurance (required — students must arrange independently)',
+  'Personal expenses and souvenirs',
+  'Optional activities not listed in the itinerary'
+];
+const defaultTiers = [
+  {students:'31+',   cost:'RMB 3,500'},
+  {students:'21–30', cost:'RMB 3,800'},
+  {students:'15–20', cost:'RMB 4,200'}
+];
+
+function initQuotationEditor() {
+  // Included items
+  const incEl = document.getElementById('quot-included-editor');
+  incEl.innerHTML = '';
+  defaultIncluded.forEach(item => addQuotItemRow('included', item));
+  // Excluded items
+  const excEl = document.getElementById('quot-excluded-editor');
+  excEl.innerHTML = '';
+  defaultExcluded.forEach(item => addQuotItemRow('excluded', item));
+  // Tiers
+  const tierEl = document.getElementById('quot-tiers-editor');
+  tierEl.innerHTML = '';
+  defaultTiers.forEach(t => addQuotTierRow(t));
+  // Radio toggle
+  document.querySelectorAll('input[name="quot-mode"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('quot-set-fields').style.display = r.value==='set' ? 'block' : 'none';
+      document.getElementById('quot-tiered-fields').style.display = r.value==='tiered' ? 'block' : 'none';
+      liveUpdate();
+    });
+  });
+}
+
+function addQuotItem(type) {
+  addQuotItemRow(type, '');
+  liveUpdate();
+}
+
+function addQuotItemRow(type, text) {
+  const el = document.getElementById(`quot-${type}-editor`);
+  const row = document.createElement('div');
+  row.className = 'footer-link-row';
+  row.style.marginBottom = '0.35rem';
+  const icon = type === 'included' ? '✓' : '✕';
+  const color = type === 'included' ? '#4CAF50' : '#f44336';
+  row.innerHTML = `
+    <span style="font-size:0.85rem;color:${color};flex-shrink:0;font-weight:700;">${icon}</span>
+    <input type="text" value="${text}" placeholder="Add item..." oninput="liveUpdate()" style="flex:1;"/>
+    <button onclick="this.parentElement.remove();liveUpdate()">✕</button>`;
+  el.appendChild(row);
+}
+
+function addQuotTier() {
+  addQuotTierRow({students:'', cost:''});
+  liveUpdate();
+}
+
+function addQuotTierRow(t) {
+  const el = document.getElementById('quot-tiers-editor');
+  const row = document.createElement('div');
+  row.className = 'footer-link-row';
+  row.style.marginBottom = '0.35rem';
+  row.innerHTML = `
+    <input type="text" value="${t.students||''}" placeholder="Student No. (e.g. 20–30)" oninput="liveUpdate()" style="flex:1;"/>
+    <input type="text" value="${t.cost||''}" placeholder="Cost per student" oninput="liveUpdate()" style="flex:1;"/>
+    <button onclick="this.parentElement.remove();liveUpdate()">✕</button>`;
+  el.appendChild(row);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// THEME TOGGLE
+// ═══════════════════════════════════════════════════════════════════
+let currentTheme = 'night';
+function toggleTheme() {
+  currentTheme = currentTheme === 'night' ? 'day' : 'night';
+  document.body.className = currentTheme;
+  document.getElementById('theme-icon-moon').style.display = currentTheme === 'night' ? 'block' : 'none';
+  document.getElementById('theme-icon-sun').style.display  = currentTheme === 'day'   ? 'block' : 'none';
+}
+
+const BRAND = {
+  wce: { accent:'#DC7F34', accentDark:'#b8612a', accentLight:'#f2e0d0', name:'WildChina Education', navSub:'Learn Something Life-Changing' }
+
+};
+
+const ACT_CATS = {
+  Culture:      { bg:'#F5E6D3', color:'#8B4513', border:'#E8A87C' },
+  Service:      { bg:'#D3E8F5', color:'#1A5276', border:'#7CB9E8' },
+  Outdoor:      { bg:'#D3F5E3', color:'#1A5C35', border:'#7EC8A0' },
+  STEAM:        { bg:'#E8D3F5', color:'#4A235A', border:'#B39DDB' },
+  'Team Building':{ bg:'#F5D3E3', color:'#7B1A3A', border:'#F48FB1' }
+};
+
+const SDG_COLORS = [
+  {n:1,  c:'#E5243B', label:'No Poverty'},
+  {n:2,  c:'#DDA63A', label:'Zero Hunger'},
+  {n:3,  c:'#4C9F38', label:'Good Health'},
+  {n:4,  c:'#C5192D', label:'Quality Education'},
+  {n:5,  c:'#FF3A21', label:'Gender Equality'},
+  {n:6,  c:'#26BDE2', label:'Clean Water'},
+  {n:7,  c:'#FCC30B', label:'Clean Energy'},
+  {n:8,  c:'#A21942', label:'Decent Work'},
+  {n:9,  c:'#FD6925', label:'Industry'},
+  {n:10, c:'#DD1367', label:'Reduced Inequalities'},
+  {n:11, c:'#FD9D24', label:'Sustainable Cities'},
+  {n:12, c:'#BF8B2E', label:'Responsible Consumption'},
+  {n:13, c:'#3F7E44', label:'Climate Action'},
+  {n:14, c:'#0A97D9', label:'Life Below Water'},
+  {n:15, c:'#56C02B', label:'Life on Land'},
+  {n:16, c:'#00689D', label:'Peace & Justice'},
+  {n:17, c:'#19486A', label:'Partnerships'}
+];
+
+// Default data
+const defaultHighlights = [
+  {cat:'Cultural Immersion', title:'Hutong Pedi-cab Tour & Scavenger Hunt', desc:"Race through Beijing's ancient alleyways by pedi-cab, then navigate a student-led scavenger hunt through the neighbourhood's hidden courtyards and local life."},
+  {cat:'History', title:'Forbidden City & Calligraphy Workshop', desc:'Explore 600 years of imperial history at the world\'s largest palace complex, then practice Chinese calligraphy with a local master artist.'},
+  {cat:'Adventure', title:'Great Wall Hike — Mutianyu', desc:'Hike one of the best-preserved sections of the Great Wall with panoramic mountain views. Optional toboggan ride back down for the adventurous.'},
+  {cat:'Performing Arts', title:'Temple of Heaven & Peking Opera', desc:'Visit the iconic Temple of Heaven, then attend a Peking Opera workshop — learning movements and crafting your own traditional face mask to take home.'},
+  {cat:'Food & Community', title:'Dumpling-Making & Local Dining', desc:'Learn to make dumplings with a local family, then enjoy iconic Beijing dishes — Peking duck, mutton hotpot, and street food at Nan Luo Gu Xiang.'},
+  {cat:'Service Learning', title:'Community Service & Reflection', desc:'Volunteer at a local orphanage and conduct community surveys — connecting with Beijing residents and leaving a meaningful positive impact.'}
+];
+
+const defaultDays = [
+  {label:'Day 1 · Arrival', title:'Pedi-cab Tour & Peking Duck Dinner',
+   morning:'Arrive in Beijing and transfer to your hotel. After settling in, take a pedi-cab tour through the ancient hutong alleyways — weaving past traditional courtyard homes and local life.',
+   afternoon:'Check in and freshen up at the hotel. Explore the surrounding neighbourhood on foot.',
+   evening:'End the day with a classic Peking duck dinner at a renowned local restaurant.',
+   acts:{Culture:['Pedi-cab Hutong Tour'],Service:[],Outdoor:[],STEAM:[],TeamBuilding:['Hotel Check-in']},
+   meals:'D'},
+  {label:'Day 2 · History & Arts', title:'Calligraphy Workshop & Forbidden City',
+   morning:'Morning calligraphy workshop with a local master — learn the history of Chinese brush writing and create your own artwork to take home.',
+   afternoon:'Afternoon exploration of the Forbidden City, the world\'s largest palace complex, through an educational scavenger hunt.',
+   evening:'Group dinner at a local restaurant, sharing highlights from the day.',
+   acts:{Culture:['Calligraphy Workshop','Forbidden City'],Service:[],Outdoor:[],STEAM:[],TeamBuilding:['Scavenger Hunt']},
+   meals:'B,L,D'},
+  {label:'Day 3 · Community & Food', title:'Hutong Scavenger Hunt & Dumpling-Making',
+   morning:'Student-led scavenger hunt through Beijing\'s hutong neighbourhoods — interviewing locals, discovering hidden temples, and navigating by map.',
+   afternoon:'Hands-on dumpling-making class with a local family, followed by a communal meal.',
+   evening:'Square dancing with local residents in the park.',
+   acts:{Culture:['Dumpling-Making Class'],Service:['Community Surveys'],Outdoor:[],STEAM:[],TeamBuilding:['Hutong Scavenger Hunt','Square Dancing']},
+   meals:'B,L,D'},
+  {label:'Day 4 · Culture & Performance', title:'Temple of Heaven & Peking Opera',
+   morning:'Morning visit to the Temple of Heaven — explore the iconic architecture and join locals for Kung Fu practice in the park.',
+   afternoon:'Peking Opera workshop: learn the history, practice signature movements, and decorate your own traditional face mask.',
+   evening:'Farewell dinner with the group.',
+   acts:{Culture:['Temple of Heaven','Peking Opera Workshop'],Service:[],Outdoor:['Kung Fu Practice'],STEAM:['Face Mask Decoration'],TeamBuilding:[]},
+   meals:'B,L,D'},
+  {label:'Day 5 · Service & Departure', title:'Volunteer & Return Home',
+   morning:'Morning volunteering session at a local orphanage — students engage in activities with the children, leaving a meaningful positive impact.',
+   afternoon:'Final group reflection session to consolidate learning and share highlights.',
+   evening:'Transfer to Beijing Capital International Airport for departure.',
+   acts:{Culture:[],Service:['Orphanage Volunteering'],Outdoor:[],STEAM:[],TeamBuilding:['Final Reflection Session']},
+   meals:'B,L'}
+];
+
+const defaultSDGs = [
+  {num:3, color:'#4C9F38', title:'Good Health and Well-Being', desc:'Kung Fu practice, community health surveys, and volunteering activities promote physical well-being and empathy for vulnerable communities.'},
+  {num:8, color:'#A21942', title:'Decent Work and Economic Growth', desc:'Visits to local artisans, market interactions, and community surveys give students insight into Beijing\'s diverse economic landscape.'},
+  {num:11, color:'#FD9D24', title:'Sustainable Cities and Communities', desc:'Hutong exploration and urban community engagement highlight the balance between preserving cultural heritage and modern city development.'}
+];
+
+const defaultProgs = [
+  {city:'Shanghai', title:'Classic China: Tradition & Transformation', url:'https://www.wildchinaeducation.com/program/shanghai-classic-china'},
+  {city:'Chengdu', title:'City of Spice', url:'https://www.wildchinaeducation.com/program/chengdu-city-of-spice'},
+  {city:'Inner Mongolia', title:'Life on the Steppe', url:'https://www.wildchinaeducation.com/program/inner-mongolia-steppe'},
+  {city:'Yangshuo', title:'Camping, Climbing, and Caving', url:'https://www.wildchinaeducation.com/program/yangshuo-camping'},
+  {city:'Xiamen', title:'Mangrove Protection', url:'https://www.wildchinaeducation.com/program/xiamen-mangrove'}
+];
+
+const defaultFooterLinks = {
+  fc1: [{label:'Programs in China', url:'https://www.wildchinaeducation.com'},{label:'MBA Trips', url:'https://www.wildchinaeducation.com/mba'},{label:'Programs Abroad', url:'https://www.wildchinaeducation.com/programs-abroad/'},{label:'Custom Programs', url:'https://www.wildchinaeducation.com/contact-us'}],
+  fc2: [{label:'About Us', url:'https://www.wildchinaeducation.com/about-us/'},{label:'Blog', url:'https://www.wildchinaeducation.com/blog'},{label:'Join Our Team', url:'https://www.wildchinaeducation.com/job'},{label:'Contact Us', url:'https://www.wildchinaeducation.com/contact-us'}],
+  fc3: [{label:'info@wildchinaeducation.com', url:'mailto:info@wildchinaeducation.com'},{label:'Send an Enquiry', url:'https://www.wildchinaeducation.com/contact-us'},{label:'WildChina', url:'https://wildchina.com/'}]
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT DYNAMIC EDITORS
+// ═══════════════════════════════════════════════════════════════════
+function initHighlightsEditor() {
+  buildHighlightsEditor();
+}
+
+function buildHighlightsEditor() {
+  const el = document.getElementById('highlights-editor');
+  el.innerHTML = defaultHighlights.slice(0, hlCount).map((h,i) => `
+  <div class="fg">
+    <div class="fg-title">Highlight ${i+1}</div>
+    <div class="field"><label>Category</label><input type="text" id="h${i}-cat" value="${h.cat}" oninput="liveUpdate()"/></div>
+    <div class="field"><label>Title</label><input type="text" id="h${i}-title" value="${h.title}" oninput="liveUpdate()"/></div>
+    <div class="field"><label>Description</label><textarea id="h${i}-desc" oninput="liveUpdate()">${h.desc}</textarea></div>
+    <div class="field"><label>Image</label>
+      <div class="upload-area"><input type="file" id="upload-h${i}" accept="image/*" onchange="handleImg('h${i}',this)"/>
+        <div class="ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><strong>Upload</strong> image</div>
+        <img class="thumb" id="thumb-h${i}"/>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function changeHlCount(delta) {
+  hlCount = Math.max(3, Math.min(6, hlCount + delta));
+  document.getElementById('hl-count-display').textContent = hlCount;
+  buildHighlightsEditor();
+  liveUpdate();
+}
+
+function initGalleryEditor() {
+  const el = document.getElementById('gallery-editor');
+  const caps = ['Hutong Pedi-cab Tour','Dumpling-Making Class','Festival Lanterns','Great Wall Hike','Calligraphy Workshop','Community Service'];
+  el.innerHTML = [0,1,2].map(i=>`
+  <div class="field">
+    <label>Top Row Image ${i+1} — Caption</label>
+    <input type="text" id="gal-cap-${i}" value="${caps[i]}" oninput="liveUpdate()"/>
+    <div class="upload-area" style="margin-top:0.3rem;"><input type="file" id="upload-gal${i}" accept="image/*" onchange="handleImg('gal${i}',this)"/>
+      <div class="ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><strong>Upload</strong></div>
+      <img class="thumb" id="thumb-gal${i}"/>
+    </div>
+  </div>`).join('') + [3,4,5].map(i=>`
+  <div class="field">
+    <label>Bottom Row Image ${i-2} — Caption</label>
+    <input type="text" id="gal-cap-${i}" value="${caps[i]}" oninput="liveUpdate()"/>
+    <div class="upload-area" style="margin-top:0.3rem;"><input type="file" id="upload-gal${i}" accept="image/*" onchange="handleImg('gal${i}',this)"/>
+      <div class="ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><strong>Upload</strong></div>
+      <img class="thumb" id="thumb-gal${i}"/>
+    </div>
+  </div>`).join('');
+}
+
+function buildDayEditor(n, data) {
+  const d = data || defaultDays[n] || {label:`Day ${n+1}`,title:'',morning:'',afternoon:'',evening:'',acts:{Culture:[],Service:[],Outdoor:[],STEAM:[],TeamBuilding:[]},meals:'B,L,D'};
+  const actHTML = Object.entries(ACT_CATS).map(([cat,style])=>`
+    <div class="field" style="margin-bottom:0.5rem;">
+      <label style="display:flex;align-items:center;gap:0.4rem;">
+        <span style="width:8px;height:8px;border-radius:2px;background:${style.border};display:inline-block;"></span>
+        ${cat} Activities (comma-separated)
+      </label>
+      <input type="text" id="d${n}-act-${cat.replace(/\s/g,'_')}" value="${(d.acts[cat]||[]).join(',')}" oninput="liveUpdate()" style="border-left:3px solid ${style.border};"/>
+    </div>`).join('');
+  return `
+  <div class="day-card" id="day-card-${n}">
+    <div class="day-card-hdr" onclick="toggleDay(${n})">
+      <div class="day-badge">${n+1}</div>
+      <span id="day-card-label-${n}">${d.label||'Day '+(n+1)}</span>
+      <span class="chev">▼</span>
+    </div>
+    <div class="day-fields">
+      <div class="field"><label>Day Label</label><input type="text" id="d${n}-label" value="${d.label||''}" oninput="document.getElementById('day-card-label-${n}').textContent=this.value;liveUpdate()"/></div>
+      <div class="field"><label>Day Title</label><input type="text" id="d${n}-title" value="${d.title||''}" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Morning</label><textarea id="d${n}-morning" oninput="liveUpdate()">${d.morning||''}</textarea></div>
+      <div class="field"><label>Afternoon</label><textarea id="d${n}-afternoon" oninput="liveUpdate()">${d.afternoon||''}</textarea></div>
+      <div class="field"><label>Evening</label><textarea id="d${n}-evening" oninput="liveUpdate()">${d.evening||''}</textarea></div>
+      ${actHTML}
+      <div class="field"><label>Meals (B=Breakfast, L=Lunch, D=Dinner)</label><input type="text" id="d${n}-meals" value="${d.meals||''}" placeholder="B,L,D" oninput="liveUpdate()"/></div>
+    </div>
+  </div>`;
+}
+
+function syncDays() {
+  const n = parseInt(document.getElementById('f-num-days').value) || 5;
+  numDays = Math.max(1, Math.min(21, n));
+  const el = document.getElementById('itinerary-editor');
+  el.innerHTML = '';
+  for (let i = 0; i < numDays; i++) {
+    el.innerHTML += buildDayEditor(i, defaultDays[i] || null);
+  }
+}
+
+function initSDGEditor() {
+  const el = document.getElementById('sdg-editor');
+  el.innerHTML = defaultSDGs.map((s,i)=>`
+  <div class="fg">
+    <div class="fg-title">Learning Outcome ${i+1}</div>
+    <div class="field"><label>SDG Number</label><input type="text" id="sdg${i}-num" value="${s.num}" oninput="liveUpdate()"/></div>
+    <div class="field"><label>Title</label><input type="text" id="sdg${i}-title" value="${s.title}" oninput="liveUpdate()"/></div>
+    <div class="field"><label>Description</label><textarea id="sdg${i}-desc" oninput="liveUpdate()">${s.desc}</textarea></div>
+    <div class="field">
+      <label>Icon Color — UN SDG Palette</label>
+      <div class="sdg-swatches" id="sdg${i}-swatches">
+        ${SDG_COLORS.map(sc=>`<div class="sdg-sw${sc.c===s.color?' selected':''}" style="background:${sc.c};" title="SDG ${sc.n}: ${sc.label}" onclick="selectSDGColor(${i},'${sc.c}',this)">${sc.n}</div>`).join('')}
+      </div>
+      <input type="hidden" id="sdg${i}-color" value="${s.color}"/>
+    </div>
+  </div>`).join('');
+}
+
+function selectSDGColor(idx, color, el) {
+  document.querySelectorAll(`#sdg${idx}-swatches .sdg-sw`).forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(`sdg${idx}-color`).value = color;
+  liveUpdate();
+}
+
+function buildProgEditor() {
+  const el = document.getElementById('programs-editor');
+  el.innerHTML = '';
+  for (let i = 0; i < progCount; i++) {
+    const p = defaultProgs[i] || {city:'',title:'',url:''};
+    el.innerHTML += `
+    <div class="fg">
+      <div class="fg-title">Program ${i+1}</div>
+      <div class="field"><label>City / Location</label><input type="text" id="ep${i}-city" value="${p.city}" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Program Name</label><input type="text" id="ep${i}-title" value="${p.title}" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Link URL</label><input type="url" id="ep${i}-url" value="${p.url}" oninput="liveUpdate()"/></div>
+      <div class="field"><label>Image</label>
+        <div class="upload-area"><input type="file" id="upload-ep${i}" accept="image/*" onchange="handleImg('ep${i}',this)"/>
+          <div class="ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><strong>Upload</strong> program image</div>
+          <img class="thumb" id="thumb-ep${i}"/>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+function changeProgCount(delta) {
+  progCount = Math.max(3, Math.min(5, progCount + delta));
+  document.getElementById('prog-count-display').textContent = progCount;
+  buildProgEditor();
+  liveUpdate();
+}
+
+function initFooterLinks() {
+  ['fc1','fc2','fc3'].forEach(col => {
+    const el = document.getElementById(`${col}-links`);
+    el.innerHTML = '';
+    defaultFooterLinks[col].forEach((lnk,i) => addFooterLinkRow(col, lnk.label, lnk.url));
+  });
+}
+
+function addFooterLink(col) {
+  addFooterLinkRow(col, '', '');
+  liveUpdate();
+}
+
+function addFooterLinkRow(col, label, url) {
+  const el = document.getElementById(`${col}-links`);
+  const row = document.createElement('div');
+  row.className = 'footer-link-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Label" value="${label}" oninput="liveUpdate()" style="flex:1;"/>
+    <input type="url" placeholder="URL" value="${url}" oninput="liveUpdate()" style="flex:1.5;"/>
+    <button onclick="this.parentElement.remove();liveUpdate()">✕</button>`;
+  el.appendChild(row);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BRAND
+// ═══════════════════════════════════════════════════════════════════
+function setBrand(b) {
+  currentBrand = b;
+  document.getElementById('brand-wce').classList.toggle('selected', b==='wce');
+  
+  const br = BRAND[b];
+  document.getElementById('tb-logo-mark').style.background = br.accent;
+  document.getElementById('si-brand').textContent = br.name;
+  document.documentElement.style.setProperty('--accent', br.accent);
+  document.documentElement.style.setProperty('--accent-dark', br.accentDark);
+  document.documentElement.style.setProperty('--accent-light', br.accentLight);
+  liveUpdate();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TABS & UI
+// ═══════════════════════════════════════════════════════════════════
+function switchTab(name) {
+  // Update all tab buttons (both bar and dropdown)
+  document.querySelectorAll('.tab').forEach(t => {
+    const oc = t.getAttribute('onclick') || '';
+    t.classList.toggle('active', oc.includes("switchTab('"+name+"')") || oc.includes('switchTab(\''+name+'\''));
+  });
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tp-'+name).classList.add('active');
+  // Update hamburger label
+  const activeTab = document.querySelector('#tabs-bar .tab.active') ||
+                    document.querySelector('#tabs-dropdown .tab.active');
+  if (activeTab) {
+    const lbl = document.getElementById('tabs-hamburger-label');
+    if (lbl) lbl.textContent = activeTab.textContent.trim();
+  }
+}
+
+function toggleTabsDropdown() {
+  const dd = document.getElementById('tabs-dropdown');
+  dd.classList.toggle('open');
+}
+
+function closeTabsDropdown() {
+  const dd = document.getElementById('tabs-dropdown');
+  dd.classList.remove('open');
+}
+
+function checkTabsOverflow() {
+  const bar = document.getElementById('tabs-bar');
+  const wrap = document.getElementById('tabs-collapsed-wrap');
+  if (!bar || !wrap) return;
+  // Check if tabs overflow their container
+  const overflows = bar.scrollWidth > bar.clientWidth + 4;
+  bar.style.display = overflows ? 'none' : 'flex';
+  wrap.style.display = overflows ? 'flex' : 'none';
+}
+
+function toggleDay(n) {
+  document.getElementById('day-card-'+n).classList.toggle('collapsed');
+}
+
+function setDevice(d) {
+  currentDevice = d;
+  const pw = document.getElementById('pw');
+  const desk = document.getElementById('ifr-desk');
+  const mob  = document.getElementById('ifr-mob');
+  document.getElementById('btn-desk').classList.toggle('active', d==='desktop');
+  document.getElementById('btn-mob').classList.toggle('active', d==='mobile');
+  if (d==='desktop') { pw.className='pw desktop'; desk.style.display='block'; mob.style.display='none'; }
+  else { pw.className='pw mobile'; desk.style.display='none'; mob.style.display='block'; }
+  refreshPreview();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// IMAGE UPLOAD
+// ═══════════════════════════════════════════════════════════════════
+function handleImg(key, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    imgs[key] = e.target.result;
+    const th = document.getElementById('thumb-'+key);
+    if (th) { th.src = e.target.result; th.style.display='block'; }
+    liveUpdate();
+    showToast('Image uploaded: ' + file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function v(id) { const el=document.getElementById(id); return el?el.value:''; }
+
+function imgBlock(key, alt, style='') {
+  if (imgs[key]) return `<img src="${imgs[key]}" alt="${alt}" style="width:100%;height:100%;object-fit:cover;${style}" loading="lazy"/>`;
+  const br = BRAND[currentBrand];
+  return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:${br.accentDark};padding:0.5rem;text-align:center;background:${br.accentLight};">${alt}</div>`;
+}
+
+function mealChip(m) {
+  const map={B:['#E8F5E9','#2E7D32','Breakfast'],L:['#FFF3E0','#E65100','Lunch'],D:['#FCE4EC','#C62828','Dinner']};
+  const [bg,col,label]=map[m.trim().toUpperCase()]||['#eee','#333',m];
+  return `<span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:${bg};color:${col};">${label}</span>`;
+}
+
+function shadeColor(hex, pct) {
+  hex=hex.replace('#','');
+  if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+  let r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
+  if(pct>0){r=Math.min(255,Math.round(r+(255-r)*pct/100));g=Math.min(255,Math.round(g+(255-g)*pct/100));b=Math.min(255,Math.round(b+(255-b)*pct/100));}
+  else{r=Math.max(0,Math.round(r*(1+pct/100)));g=Math.max(0,Math.round(g*(1+pct/100)));b=Math.max(0,Math.round(b*(1+pct/100)));}
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BUILD PROPOSAL HTML
+// ═══════════════════════════════════════════════════════════════════
+function buildHTML() {
+  const br = BRAND[currentBrand];
+  const accent = br.accent;
+  const accentDark = br.accentDark;
+  const accentLight = br.accentLight;
+  const aHex = accent.replace('#','');
+
+  const client      = v('f-client') || '[Client School]';
+  const progName    = v('f-prog-name') || 'Charms of the Capital';
+  const location    = v('f-location') || 'Beijing, China';
+  const numDaysVal  = v('f-num-days') || '5';
+  const dateStart   = v('f-date-start');
+  const dateEnd     = v('f-date-end');
+  const travelDates = dateStart && dateEnd
+    ? `${new Date(dateStart).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} – ${new Date(dateEnd).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`
+    : '[Travel Dates TBC]';
+  const groupSize   = v('f-group-size') || '[Group Size]';
+  const accomm      = v('f-accommodation') || '4-Star Hotels';
+  const meals       = v('f-meals') || 'B / L / D Included';
+  const price       = v('f-price') || '[Investment TBC]';
+  const heroTitle   = v('f-hero-title') || progName;
+  const heroDesc    = v('f-hero-desc') || '';
+  const heroClient  = v('f-hero-client') || client;
+  const cta1        = v('f-cta1') || 'Explore the Program';
+  const cta2        = v('f-cta2') || 'View Itinerary';
+  const ovH         = v('f-ov-heading') || 'Experience the Heart of Beijing';
+  const ovP1        = v('f-ov-p1') || '';
+  const ovP2        = v('f-ov-p2') || '';
+  const ovP3        = v('f-ov-p3') || '';
+  const itinNote    = v('f-itin-note') || '';
+  const hlLabel     = v('f-hl-label') || 'Key Experiences';
+  const hlTitle     = v('f-hl-title') || 'Program Highlights';
+  const sdgLabel    = v('f-sdg-label') || 'Learning Outcomes';
+  const sdgTitle    = v('f-sdg-title') || 'UN SDGs in Focus';
+  const epLabel     = v('f-ep-label') || 'Explore More';
+  const epTitle     = v('f-ep-title') || 'Other Popular Programs';
+  const ctaH        = v('f-cta-h') || '';
+  const ctaBody     = v('f-cta-body') || '';
+  const ctaBtn1     = v('f-cta-btn1') || 'Contact Us';
+  const ctaBtn2     = v('f-cta-btn2') || 'Visit Our Website';
+  const ftTag       = v('f-ft-tag') || '';
+  const ftEmail     = v('f-ft-email') || 'info@wildchinaeducation.com';
+  const ftOffices   = v('f-ft-offices') || '';
+  const ftLI        = v('f-ft-li') || '#';
+  const ftYT        = v('f-ft-yt') || '#';
+  const fc1Title    = v('f-fc1-title') || 'Browse Programs';
+  const fc2Title    = v('f-fc2-title') || 'Useful Info';
+  const fc3Title    = v('f-fc3-title') || 'Contact Us';
+  const proposalDate= v('f-date') || new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  const heroBgStyle = imgs['hero-bg']
+    ? `background-image:url('${imgs['hero-bg']}');background-size:cover;background-position:center;`
+    : `background:${accent};`;
+
+  // Logo
+  const logoHTML = imgs['logo']
+    ? `<img src="${imgs['logo']}" alt="${br.name}" style="height:44px;object-fit:contain;"/>`
+    : `<div style="width:44px;height:44px;background:#fff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.4rem;font-weight:700;color:${accent};">野</div>`;
+
+  // Map circle
+  const mapHTML = imgs['hero-map']
+    ? `<img src="${imgs['hero-map']}" alt="Map" style="width:100%;height:100%;object-fit:contain;"/>`
+    : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:0.4rem;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.5);">${location}</span>
+       </div>`;
+
+  // Highlights — adaptive grid based on hlCount
+  const hlCols = hlCount === 3 ? 3 : hlCount === 4 ? 2 : hlCount === 5 ? 3 : 3;
+  const hlHTML = Array.from({length:hlCount},(_,i)=>{
+    const cat   = v(`h${i}-cat`) || defaultHighlights[i].cat;
+    const title = v(`h${i}-title`) || defaultHighlights[i].title;
+    const desc  = v(`h${i}-desc`) || defaultHighlights[i].desc;
+    return `
+    <article style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="aspect-ratio:16/9;overflow:hidden;position:relative;">${imgBlock('h'+i, title)}</div>
+      <div style="padding:1.1rem;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${accent};margin-bottom:0.35rem;">${cat}</div>
+        <h3 style="font-family:Georgia,serif;font-size:0.95rem;font-weight:700;color:#1E1E1E;margin-bottom:0.45rem;line-height:1.3;">${title}</h3>
+        <p style="font-size:0.8rem;color:#777;line-height:1.7;">${desc}</p>
+      </div>
+    </article>`;
+  }).join('');
+
+  // Gallery
+  const galTop = [0,1,2].map(i=>`
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:${accentLight};">
+      ${imgBlock('gal'+i, v('gal-cap-'+i)||'Gallery image')}
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">${v('gal-cap-'+i)||''}</figcaption>
+    </figure>`).join('');
+  const galBot = [3,4,5].map(i=>`
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:${accentLight};">
+      ${imgBlock('gal'+i, v('gal-cap-'+i)||'Gallery image')}
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">${v('gal-cap-'+i)||''}</figcaption>
+    </figure>`).join('');
+
+  // Itinerary
+  const itinHTML = Array.from({length:numDays},(_,i)=>{
+    const label    = v(`d${i}-label`) || `Day ${i+1}`;
+    const title    = v(`d${i}-title`) || '';
+    const morning  = v(`d${i}-morning`) || '';
+    const afternoon= v(`d${i}-afternoon`) || '';
+    const evening  = v(`d${i}-evening`) || '';
+    const mealStr  = v(`d${i}-meals`) || '';
+    const mealChips= mealStr.split(',').filter(Boolean).map(mealChip).join('');
+
+    const actChips = Object.entries(ACT_CATS).map(([cat,style])=>{
+      const key = `d${i}-act-${cat.replace(/\s/g,'_')}`;
+      const acts = v(key).split(',').filter(Boolean);
+      return acts.map(a=>`<span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:${style.bg};color:${style.color};border:1px solid ${style.border};">${a.trim()}</span>`).join('');
+    }).join('');
+
+    return `
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      ${i<numDays-1?`<div style="position:absolute;left:31px;top:56px;bottom:0;width:2px;background:#E5DDD4;"></div>`:''}
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px ${accentLight};">${i+1}</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:${i<numDays-1?'1px solid #E5DDD4':'none'};">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${accent};margin-bottom:0.25rem;">${label}</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">${title}</div>
+        ${morning?`<div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">${morning}</p></div>`:''}
+        ${afternoon?`<div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">${afternoon}</p></div>`:''}
+        ${evening?`<div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">${evening}</p></div>`:''}
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;">${actChips}</div>
+        <div style="display:flex;gap:0.3rem;">${mealChips}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── ACCOMMODATION ──────────────────────────────────────────────
+  const showAccom = document.getElementById('f-accom-show')?.checked;
+
+  // Collect all accommodation option cards
+  const accomCards = Array.from(document.querySelectorAll('#accom-options-editor .day-card'));
+  const accomOptions = accomCards.map((card, idx) => ({
+    name:     card.querySelector('.ac-name')?.value || '',
+    addr:     card.querySelector('.ac-addr')?.value || '',
+    duration: card.querySelector('.ac-duration')?.value || '',
+    safety:   card.querySelector('.ac-safety')?.value || '',
+    note:     card.querySelector('.ac-note')?.value || '',
+    imgs:     (() => {
+      const slotImgs = [];
+      const container = card.querySelector('[id^="accom-imgs-"]');
+      if (container) {
+        const slots = container.querySelectorAll('.ac-img-input');
+        slots.forEach(inp => {
+          const s = inp.getAttribute('data-slot');
+          const key = 'accom-' + idx + '-' + s;
+          if (imgs[key]) slotImgs.push(imgs[key]);
+        });
+      }
+      return slotImgs;
+    })()
+  }));
+
+  const accomHTML = !showAccom ? '' : `
+  <section class="section" id="accommodation" style="background:#fff;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">Where You'll Stay</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Accommodation</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+        ${accomOptions.map(opt => `
+        <div style="background:#F9F6F2;border:1px solid #E5DDD4;border-radius:8px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:${opt.imgs.length>0?'1fr 1fr':'1fr'};gap:0;align-items:stretch;">
+            <div style="padding:1.5rem;">
+              <div style="background:#fff;border-radius:6px;padding:1.2rem;margin-bottom:1rem;border:1px solid #E5DDD4;">
+                ${opt.name?`<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
+                  <div style="width:32px;height:32px;border-radius:5px;background:${accent};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div style="font-family:Georgia,serif;font-size:1rem;font-weight:700;color:#1E1E1E;">${opt.name}</div>
+                </div>`:''}
+                ${opt.addr?`<div style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:#555;margin-bottom:0.4rem;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  ${opt.addr}
+                </div>`:''}
+                ${opt.duration?`<div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;font-weight:600;color:${accent};">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  ${opt.duration}
+                </div>`:''}
+                ${opt.safety?`<div style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.78rem;color:#555;margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid #E5DDD4;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  ${opt.safety}
+                </div>`:''}
+              </div>
+              ${opt.note?`<p style="font-size:0.75rem;color:#999;font-style:italic;display:flex;align-items:flex-start;gap:0.4rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                ${opt.note}
+              </p>`:''}
+            </div>
+            ${opt.imgs.length>0?`<div style="display:grid;grid-template-rows:${opt.imgs.length===1?'1fr':opt.imgs.length===2?'1fr 1fr':'1fr 1fr 1fr'};gap:2px;min-height:220px;">
+              ${opt.imgs.map(src=>`<div style="overflow:hidden;"><img src="${src}" alt="Hotel" style="width:100%;height:100%;object-fit:cover;"/></div>`).join('')}
+            </div>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>`;
+
+  // ── TRANSPORTATION ───────────────────────────────────────────────
+  const showTrans = document.getElementById('f-trans-show')?.checked;
+  const transLegs = [];
+  document.querySelectorAll('#transport-editor .day-card').forEach(card => {
+    transLegs.push({
+      date:  card.querySelector('.tr-date')?.value || '',
+      type:  card.querySelector('.tr-type')?.value || 'Flight',
+      number:card.querySelector('.tr-num')?.value  || '',
+      route: card.querySelector('.tr-route')?.value|| '',
+      dep:   card.querySelector('.tr-dep')?.value  || '',
+      arr:   card.querySelector('.tr-arr')?.value  || '',
+      price: card.querySelector('.tr-price')?.value || ''
+    });
+  });
+
+  const typeIcon = {
+    Flight: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
+    Train:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="M8 19l-2 3"/><path d="M16 19l2 3"/></svg>',
+    Bus:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-4.3c.3-2.7.2-3.7.2-3.7H2s-.1 1-.1 3.7C2.2 16.3 2.7 18 2.7 18H6"/><circle cx="8" cy="18" r="2"/><circle cx="16" cy="18" r="2"/><path d="M1 6h22"/><path d="M4 3h16"/></svg>',
+    Ferry:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0021 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7H5v6"/><path d="M12 7V2"/><path d="M5 7H3"/><path d="M19 7h2"/></svg>'
+  };
+  const transHTML = (!showTrans || transLegs.length===0) ? '' : `
+  <section class="section" id="transportation" style="background:#F9F6F2;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">Getting There</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Transportation</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+          <thead>
+            <tr style="background:${accent};">
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Date</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Type</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">No.</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Route</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Departure</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Arrival</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Est. Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${transLegs.map((leg,i)=>`
+            <tr style="border-bottom:1px solid #E5DDD4;background:${i%2===0?'#fff':'#FDFAF7'};">
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#1E1E1E;">${leg.date}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">${typeIcon[leg.type]||''}${leg.type}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:${accent};">${leg.number}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#1E1E1E;">${leg.route}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">${leg.dep}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">${leg.arr}</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:${accent};">${leg.price||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>`;
+
+  // ── QUOTATION ────────────────────────────────────────────────────
+  const showQuot   = document.getElementById('f-quot-show')?.checked;
+  const quotDesc   = v('f-quot-desc') || '';
+  const quotMode   = document.querySelector('input[name="quot-mode"]:checked')?.value || 'set';
+  const quotCost   = v('f-quot-cost') || '';
+
+  // Collect included/excluded items
+  const quotIncluded = Array.from(document.querySelectorAll('#quot-included-editor .footer-link-row input[type="text"]')).map(i=>i.value).filter(Boolean);
+  const quotExcluded = Array.from(document.querySelectorAll('#quot-excluded-editor .footer-link-row input[type="text"]')).map(i=>i.value).filter(Boolean);
+
+  // Collect tiers
+  const quotTiers = Array.from(document.querySelectorAll('#quot-tiers-editor .footer-link-row')).map(row=>{
+    const inputs = row.querySelectorAll('input');
+    return {students: inputs[0]?.value||'', cost: inputs[1]?.value||''};
+  }).filter(t=>t.students||t.cost);
+
+  const quotHTML = !showQuot ? '' : `
+  <section class="section" id="quotation" style="background:#ffffff;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">Investment</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Quotation</h2>
+        ${quotDesc?`<p style="font-size:0.95rem;color:#666;line-height:1.8;margin-top:0.6rem;max-width:640px;">${quotDesc}</p>`:''}
+      </div>
+
+      ${quotMode==='set'&&quotCost?`
+      <!-- FIXED PRICE LAYOUT -->
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:start;">
+        <div style="min-width:260px;">
+          <div style="background:${accent};border-radius:12px;padding:2rem 2.2rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.12);position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.1);"></div>
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;">Per Student</div>
+            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#fff;line-height:1.1;margin-bottom:0.3rem;">${quotCost}</div>
+            <div style="width:40px;height:2px;background:rgba(255,255,255,0.4);margin:0.75rem auto;"></div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">All-inclusive program cost</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          ${quotIncluded.length>0?`
+          <div style="background:#fff;border-radius:8px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-top:3px solid #4CAF50;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#2E7D32;">Included</span>
+            </div>
+            <ul style="display:flex;flex-direction:column;gap:0.5rem;">
+              ${quotIncluded.map(item=>`<li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:#444;line-height:1.55;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5" style="flex-shrink:0;margin-top:3px;"><polyline points="20 6 9 17 4 12"/></svg>
+                ${item}
+              </li>`).join('')}
+            </ul>
+          </div>`:''}
+          ${quotExcluded.length>0?`
+          <div style="background:#fff;border-radius:8px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-top:3px solid #f44336;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C62828;">Not Included</span>
+            </div>
+            <ul style="display:flex;flex-direction:column;gap:0.5rem;">
+              ${quotExcluded.map(item=>`<li style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:#666;line-height:1.55;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" style="flex-shrink:0;margin-top:3px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                ${item}
+              </li>`).join('')}
+            </ul>
+          </div>`:''}
+        </div>
+      </div>
+      `:''}
+
+      ${quotMode==='tiered'&&quotTiers.length>0?`
+      <!-- TIERED PRICE LAYOUT -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;">
+        <div>
+          <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${accent};margin-bottom:1rem;">Price by Group Size</div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              ${quotTiers.map((t,i)=>`
+              <div style="display:flex;align-items:center;justify-content:space-between;background:${i===0?accent:'#fff'};border:1px solid ${i===0?accent:'#E5DDD4'};border-radius:8px;padding:1rem 1.25rem;box-shadow:${i===0?'0 4px 16px rgba(0,0,0,0.12)':'0 1px 4px rgba(0,0,0,0.05)'};">
+                <div style="display:flex;align-items:center;gap:0.6rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${i===0?'rgba(255,255,255,0.9)':accent}" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                  <span style="font-size:0.85rem;font-weight:600;color:${i===0?'#fff':'#1E1E1E'};">${t.students} students</span>
+                </div>
+                <span style="font-family:Georgia,serif;font-size:1.1rem;font-weight:700;color:${i===0?'#fff':accent};">${t.cost}</span>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+          ${quotIncluded.length>0?`
+          <div style="background:#fff;border-radius:8px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-top:3px solid #4CAF50;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.9rem;">
+              <div style="width:26px;height:26px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#2E7D32;">Included</span>
+            </div>
+            <ul style="display:flex;flex-direction:column;gap:0.4rem;">
+              ${quotIncluded.map(item=>`<li style="display:flex;align-items:flex-start;gap:0.45rem;font-size:0.78rem;color:#444;line-height:1.55;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5" style="flex-shrink:0;margin-top:3px;"><polyline points="20 6 9 17 4 12"/></svg>
+                ${item}
+              </li>`).join('')}
+            </ul>
+          </div>`:''}
+          ${quotExcluded.length>0?`
+          <div style="background:#fff;border-radius:8px;padding:1.4rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-top:3px solid #f44336;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.9rem;">
+              <div style="width:26px;height:26px;border-radius:50%;background:#FFEBEE;display:flex;align-items:center;justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C62828;">Not Included</span>
+            </div>
+            <ul style="display:flex;flex-direction:column;gap:0.4rem;">
+              ${quotExcluded.map(item=>`<li style="display:flex;align-items:flex-start;gap:0.45rem;font-size:0.78rem;color:#666;line-height:1.55;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" style="flex-shrink:0;margin-top:3px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                ${item}
+              </li>`).join('')}
+            </ul>
+          </div>`:''}
+        </div>
+      </div>
+      `:''}
+    </div>
+  </section>`;
+
+  // SDGs
+  const sdgHTML = [0,1,2].map(i=>{
+    const num   = v(`sdg${i}-num`) || defaultSDGs[i].num;
+    const title = v(`sdg${i}-title`) || defaultSDGs[i].title;
+    const desc  = v(`sdg${i}-desc`) || defaultSDGs[i].desc;
+    const color = v(`sdg${i}-color`) || defaultSDGs[i].color;
+    return `
+    <div style="background:#fff;border-radius:6px;padding:1.4rem;display:flex;align-items:flex-start;gap:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="width:48px;height:48px;border-radius:6px;background:${color};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1.2rem;font-weight:800;">${num}</div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4A90A4;margin-bottom:0.2rem;">SDG ${num}</div>
+        <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:700;color:#1E1E1E;margin-bottom:0.3rem;">${title}</div>
+        <p style="font-size:0.78rem;color:#777;line-height:1.65;">${desc}</p>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Programs grid
+  const progCols = progCount <= 3 ? 3 : progCount === 4 ? 4 : 5;
+  const progHTML = Array.from({length:progCount},(_,i)=>{
+    const city  = v(`ep${i}-city`) || defaultProgs[i]?.city || '';
+    const title = v(`ep${i}-title`) || defaultProgs[i]?.title || '';
+    const url   = v(`ep${i}-url`) || defaultProgs[i]?.url || '#';
+    return `
+    <a href="${url}" style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);display:block;text-decoration:none;">
+      <div style="aspect-ratio:4/3;overflow:hidden;position:relative;">${imgBlock('ep'+i, city||'Program image')}</div>
+      <div style="padding:0.8rem;">
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${accent};margin-bottom:0.2rem;">${city}</div>
+        <div style="font-family:Georgia,serif;font-size:0.8rem;font-weight:700;color:#1E1E1E;line-height:1.3;">${title}</div>
+      </div>
+    </a>`;
+  }).join('');
+
+  // Footer links
+  const buildFtLinks = (col) => {
+    const rows = document.querySelectorAll(`#${col}-links .footer-link-row`);
+    return Array.from(rows).map(row=>{
+      const inputs = row.querySelectorAll('input');
+      const label = inputs[0]?.value || '';
+      const url   = inputs[1]?.value || '#';
+      return `<li><a href="${url}" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">${label}</a></li>`;
+    }).join('');
+  };
+
+  // LinkedIn SVG
+  const liSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+  const ytSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${heroTitle} — ${br.name}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Poppins','Helvetica Neue',Arial,sans-serif;background:#F9F6F2;color:#1E1E1E;line-height:1.7;-webkit-font-smoothing:antialiased;}
+img{display:block;max-width:100%;height:auto;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+.container{width:100%;max-width:1160px;margin-inline:auto;padding-inline:clamp(1.25rem,5vw,2.5rem);}
+.section{padding-block:clamp(2.5rem,5vw,4.5rem);}
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr!important;}
+  .hero-map-wrap{display:none!important;}
+  .intro-grid{grid-template-columns:1fr!important;}
+  .hl-grid{grid-template-columns:1fr!important;}
+  .sdg-grid{grid-template-columns:1fr!important;}
+  .ft-grid{grid-template-columns:1fr!important;gap:1.5rem!important;}
+  .nav-links{display:none!important;}
+  .nav-cta-btn{display:none!important;}
+  #nav-hamburger{display:flex!important;}
+}
+@media(min-width:769px){
+  #nav-hamburger{display:none!important;}
+  #nav-mobile-menu{display:none!important;}
+}
+@media print{.nav{display:none!important;}body{background:#fff;}}
+
+/* DAY MODE OVERRIDES */
+body.day .day-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .prog-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .xbtn.save{background:rgba(220,127,52,0.1);color:var(--ed-text);border-color:rgba(220,127,52,0.3);}
+body.day .xbtn.pdf{background:#f5e8d8;color:#5a3010;border-color:rgba(220,127,52,0.3);}
+body.day .cnt-btn{background:rgba(220,127,52,0.1);border-color:rgba(220,127,52,0.25);}
+body.day .add-link-btn{background:rgba(220,127,52,0.06);color:var(--ed-muted);}
+body.day .footer-link-row button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .prog-card-hdr button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .dev-toggle{background:rgba(220,127,52,0.1);}
+body.day .prev-url{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn:hover{background:rgba(220,127,52,0.18);}
+body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
+</style>
+</head>
+<body class="night">
+
+<!-- NAV -->
+<nav class="nav" style="background:${accent};position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:0.85rem;">
+      <!-- LOGO — never hidden -->
+      <a href="https://www.wildchinaeducation.com" style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;text-decoration:none;">
+        ${logoHTML}
+        <div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;">
+          <strong style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#fff;letter-spacing:0.01em;display:block;">${br.name}</strong>
+          <span style="font-size:0.55rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.72);display:block;">${br.navSub}</span>
+        </div>
+      </a>
+      <!-- DESKTOP NAV LINKS -->
+      <ul class="nav-links" style="display:flex;align-items:center;gap:1.2rem;list-style:none;margin:0;padding:0;">
+        <li><a href="https://www.wildchinaeducation.com" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Programs in China</a></li>
+        <li><a href="https://www.wildchinaeducation.com/mba" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">MBA Trips</a></li>
+        <li><a href="https://www.wildchinaeducation.com/programs-abroad/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Programs Abroad</a></li>
+        <li><a href="https://www.wildchinaeducation.com/about-us/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">About</a></li>
+        <li><a href="https://www.wildchinaeducation.com/contact-us" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Contact Us</a></li>
+        <li><a href="https://wildchina.com/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;" target="_blank" rel="noopener">WildChina</a></li>
+      </ul>
+      <!-- DESKTOP CTA -->
+      <a href="https://www.wildchinaeducation.com/#" class="nav-cta-btn" style="display:inline-flex;align-items:center;font-size:0.68rem;font-weight:700;padding:0.45em 0.9em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.7);white-space:nowrap;text-decoration:none;flex-shrink:0;">Free Resources</a>
+      <!-- HAMBURGER BUTTON (mobile / narrow) -->
+      <button id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu" style="display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;flex-shrink:0;">
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+      </button>
+    </div>
+  </div>
+  <!-- MOBILE DROPDOWN MENU -->
+  <div id="nav-mobile-menu" style="display:none;background:${accentDark};border-top:1px solid rgba(255,255,255,0.15);">
+    <div class="container" style="padding-block:0.75rem;">
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;">
+        <li><a href="https://www.wildchinaeducation.com" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Programs in China</a></li>
+        <li><a href="https://www.wildchinaeducation.com/mba" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">MBA Trips</a></li>
+        <li><a href="https://www.wildchinaeducation.com/programs-abroad/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Programs Abroad</a></li>
+        <li><a href="https://www.wildchinaeducation.com/about-us/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">About</a></li>
+        <li><a href="https://www.wildchinaeducation.com/blog" style="display:block;padding:0.6rem 0 0.6rem 1rem;font-size:0.78rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.08);">↳ Blog</a></li>
+        <li><a href="https://www.wildchinaeducation.com/job" style="display:block;padding:0.6rem 0 0.6rem 1rem;font-size:0.78rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">↳ Join Our Team</a></li>
+        <li><a href="https://www.wildchinaeducation.com/contact-us" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Contact Us</a></li>
+        <li><a href="https://wildchina.com/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);" target="_blank" rel="noopener">WildChina ↗</a></li>
+        <li style="padding-top:0.6rem;"><a href="https://www.wildchinaeducation.com/#" style="display:inline-flex;align-items:center;font-size:0.78rem;font-weight:700;padding:0.5em 1.1em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.7);text-decoration:none;">Free Resources</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="hero" style="${heroBgStyle}padding:clamp(4rem,9vw,7rem) 0 clamp(3rem,6vw,5rem);position:relative;overflow:hidden;">
+  ${imgs['hero-bg']?`<div style="position:absolute;inset:0;background:rgba(0,0,0,0.42);"></div>`:`<div style="position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.025) 40px,rgba(0,0,0,0.025) 41px);"></div>`}
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="hero-grid" style="display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:center;">
+      <div style="max-width:680px;">
+        <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.2rem,5.5vw,4rem);font-weight:700;line-height:1.05;color:#fff;margin-bottom:1.1rem;">${heroTitle}</h1>
+        <p style="font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,1.4vw,1rem);color:rgba(255,255,255,0.88);line-height:1.55;max-width:580px;margin-bottom:0.75rem;">${heroDesc}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:1.1rem;margin-bottom:1.75rem;">
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${numDaysVal} Days
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${location}
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            ${heroClient}
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.7rem;">
+          <a href="#overview" onclick="document.getElementById('overview').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:#fff;color:${accent};box-shadow:0 2px 8px rgba(0,0,0,0.2);">${cta1}</a>
+          <a href="#itinerary" onclick="document.getElementById('itinerary').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.8);">${cta2}</a>
+        </div>
+      </div>
+      <div class="hero-map-wrap" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+        <div style="width:312px;height:312px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          ${mapHTML}
+        </div>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);">${location}</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<section class="section" id="overview" style="background:#fff;">
+  <div class="container">
+    <div class="intro-grid" style="display:grid;grid-template-columns:1fr 320px;gap:clamp(2rem,5vw,4rem);align-items:start;">
+      <div>
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">Program Overview</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;margin-bottom:1.1rem;">${ovH}</h2>
+        <div style="font-size:0.95rem;color:#444;line-height:1.85;">
+          <p>${ovP1}</p>
+          ${ovP2?`<p style="margin-top:0.9rem;">${ovP2}</p>`:''}
+          ${ovP3?`<p style="margin-top:0.9rem;">${ovP3}</p>`:''}
+        </div>
+      </div>
+      <aside style="background:#F9F6F2;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;flex-shrink:0;">
+        <div style="background:${accent};padding:0.9rem 1.1rem;">
+          <h3 style="font-family:Georgia,serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#fff;">Program at a Glance</h3>
+        </div>
+        <div>
+          ${[['Duration',numDaysVal+' Days'],['Location',location],['Group Size',groupSize],['Travel Dates',travelDates],['Accommodation',accomm],['Meals',meals]].map(([l,val])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">${l}</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">${val}</span>
+          </div>`).join('')}
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Investment</span>
+            <span style="font-size:0.82rem;font-weight:700;color:${accent};text-align:right;">${price}</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section style="background:#fff;padding-bottom:clamp(2.5rem,5vw,4.5rem);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:0.65rem;">${galTop}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;">${galBot}</div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section class="section" id="highlights" style="background:#F9F6F2;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">${hlLabel}</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">${hlTitle}</h2>
+    </div>
+    <div class="hl-grid" style="display:grid;grid-template-columns:repeat(${hlCols},1fr);gap:1.1rem;">${hlHTML}</div>
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section class="section" id="itinerary" style="background:#fff;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">Day by Day</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;margin-bottom:0.5rem;">Itinerary Overview</h2>
+      <p style="font-size:0.9rem;color:#555;line-height:1.8;max-width:560px;margin-bottom:1rem;">${itinNote}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+        <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-right:0.25rem;">Activity Types:</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Culture</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3E8F5;color:#1A5276;border:1px solid #7CB9E8;">Service</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3F5E3;color:#1A5C35;border:1px solid #7EC8A0;">Outdoor</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#E8D3F5;color:#4A235A;border:1px solid #B39DDB;">STEAM</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5D3E3;color:#7B1A3A;border:1px solid #F48FB1;">Team Building</span>
+      </div>
+    </div>
+    <div>${itinHTML}</div>
+  </div>
+</section>
+
+<!-- LEARNING OUTCOMES -->
+<section class="section" id="sdgs" style="background:#E6F0F3;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">${sdgLabel}</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">${sdgTitle}</h2>
+    </div>
+    <div class="sdg-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;">${sdgHTML}</div>
+  </div>
+</section>
+
+${accomHTML}
+
+${transHTML}
+
+${quotHTML}
+
+<!-- EXPLORE MORE -->
+<section class="section" id="explore" style="background:#F9F6F2;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${accent};margin-bottom:0.5rem;">${epLabel}</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">${epTitle}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(${progCols},1fr);gap:1rem;">${progHTML}</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:${accent};padding-block:clamp(2.5rem,5vw,4rem);text-align:center;position:relative;overflow:hidden;" id="contact">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.025) 40px,rgba(0,0,0,0.025) 41px);"></div>
+  <div style="position:relative;z-index:1;max-width:620px;margin-inline:auto;padding-inline:1.5rem;">
+    <h2 style="font-family:Georgia,serif;font-size:clamp(1.4rem,3vw,2.1rem);font-weight:700;color:#fff;margin-bottom:0.7rem;">${ctaH}</h2>
+    <p style="font-size:0.95rem;color:rgba(255,255,255,0.85);margin-bottom:1.75rem;line-height:1.7;">${ctaBody}</p>
+    <div style="display:flex;justify-content:center;gap:0.9rem;flex-wrap:wrap;">
+      <a href="mailto:${ftEmail}" style="display:inline-flex;align-items:center;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:#fff;color:${accent};box-shadow:0 2px 8px rgba(0,0,0,0.2);">${ctaBtn1}</a>
+      <a href="https://www.wildchinaeducation.com/contact" style="display:inline-flex;align-items:center;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.8);" target="_blank" rel="noopener">${ctaBtn2}</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:${accent};padding-block:clamp(2rem,4vw,3.5rem);">
+  <div class="container">
+    <div class="ft-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,0.2);">
+      <div>
+        <strong style="font-family:Georgia,serif;display:block;font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">${br.name}</strong>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:230px;margin-bottom:1.1rem;">${ftTag}</p>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+          <a href="${ftLI}" style="width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff;transition:background 0.2s;" target="_blank" rel="noopener" title="LinkedIn">${liSVG}</a>
+          <a href="${ftYT}" style="width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff;transition:background 0.2s;" target="_blank" rel="noopener" title="YouTube">${ytSVG}</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">${fc1Title}</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;">${buildFtLinks('fc1')}</ul>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">${fc2Title}</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;">${buildFtLinks('fc2')}</ul>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">${fc3Title}</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;">${buildFtLinks('fc3')}</ul>
+        <p style="margin-top:0.75rem;font-size:0.72rem;color:rgba(255,255,255,0.45);">${ftOffices}</p>
+      </div>
+    </div>
+    <div style="padding-top:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.7rem;color:rgba(255,255,255,0.5);">
+      <span>© ${new Date().getFullYear()} ${br.name}. All rights reserved.</span>
+      <span>
+        <a href="https://www.wildchinaeducation.com/terms" style="color:rgba(255,255,255,0.65);">Terms</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.wildchinaeducation.com/privacy" style="color:rgba(255,255,255,0.65);">Privacy Policy</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PREVIEW
+// ═══════════════════════════════════════════════════════════════════
+function liveUpdate() {
+  clearTimeout(debounce);
+  debounce = setTimeout(() => {
+    refreshPreview();
+    const prog = v('f-prog-name') || v('f-hero-title') || 'Charms of the Capital';
+    const client = v('f-client') || '[Client School]';
+    document.getElementById('tb-prog').textContent = prog;
+    document.getElementById('tb-client').textContent = client;
+  }, 200);
+}
+
+function refreshPreview() {
+  const html = buildHTML();
+  const blob = new Blob([html], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const id   = currentDevice === 'desktop' ? 'ifr-desk' : 'ifr-mob';
+  const ifr  = document.getElementById(id);
+  const old  = ifr.src;
+  ifr.src = url;
+  if (old && old.startsWith('blob:')) setTimeout(()=>URL.revokeObjectURL(old), 2000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════════════════════════
+function saveDraft() {
+  const ids = ['f-client','f-date','f-bd-name','f-bd-email','f-bd-phone','f-prog-name','f-location','f-num-days','f-date-start','f-date-end','f-group-size','f-accommodation','f-meals','f-price','f-hero-title','f-hero-desc','f-hero-client','f-cta1','f-cta2','f-ov-heading','f-ov-p1','f-ov-p2','f-ov-p3','f-hl-label','f-hl-title','f-itin-note','f-sdg-label','f-sdg-title','f-ep-label','f-ep-title','f-cta-h','f-cta-body','f-cta-btn1','f-cta-btn2','f-ft-tag','f-ft-email','f-ft-offices','f-ft-li','f-ft-yt','f-fc1-title','f-fc2-title','f-fc3-title'];
+  const data = {brand: currentBrand, progCount, numDays};
+  ids.forEach(id => { const el=document.getElementById(id); if(el) data[id]=el.value; });
+  // highlights
+  for(let i=0;i<6;i++) ['cat','title','desc'].forEach(f=>{ const el=document.getElementById(`h${i}-${f}`); if(el) data[`h${i}-${f}`]=el.value; });
+  // gallery
+  for(let i=0;i<7;i++) { const el=document.getElementById(`gal-cap-${i}`); if(el) data[`gal-cap-${i}`]=el.value; }
+  // days
+  for(let i=0;i<numDays;i++) {
+    ['label','title','morning','afternoon','evening','meals'].forEach(f=>{ const el=document.getElementById(`d${i}-${f}`); if(el) data[`d${i}-${f}`]=el.value; });
+    Object.keys(ACT_CATS).forEach(cat=>{ const el=document.getElementById(`d${i}-act-${cat.replace(/\s/g,'_')}`); if(el) data[`d${i}-act-${cat.replace(/\s/g,'_')}`]=el.value; });
+  }
+  // sdgs
+  for(let i=0;i<3;i++) ['num','title','desc','color'].forEach(f=>{ const el=document.getElementById(`sdg${i}-${f}`); if(el) data[`sdg${i}-${f}`]=el.value; });
+  // programs
+  for(let i=0;i<progCount;i++) ['city','title','url'].forEach(f=>{ const el=document.getElementById(`ep${i}-${f}`); if(el) data[`ep${i}-${f}`]=el.value; });
+  localStorage.setItem('wce-proposal-v4', JSON.stringify(data));
+  document.getElementById('si-saved').textContent = 'Saved ' + new Date().toLocaleTimeString();
+  showToast('✅ Draft saved');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHARE HTML — Download the proposal as a standalone HTML file
+// ═══════════════════════════════════════════════════════════════════
+function shareHTML() {
+  const html = buildHTML();
+  const blob = new Blob([html], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const progName = v('f-prog-name') || v('f-hero-title') || 'WCE-Proposal';
+  const fileName = `WCE-${progName.replace(/\s+/g,'-')}-Proposal.html`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+  showToast('📎 HTML downloaded — share the file directly!');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT PDF
+// ═══════════════════════════════════════════════════════════════════
+function exportPDF() {
+  showToast('📄 Opening print dialog — choose "Save as PDF"');
+  const html = buildHTML();
+  const printHTML = html.replace('</body>', `<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body>`);
+  const blob = new Blob([printHTML], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, '_blank');
+  if (!win) {
+    const a = document.createElement('a');
+    a.href = url; a.download = 'WCE-Proposal.html'; a.click();
+    showToast('📥 Downloaded — open and press Ctrl+P to save as PDF');
+  }
+  setTimeout(()=>URL.revokeObjectURL(url), 15000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT PPTX
+// ═══════════════════════════════════════════════════════════════════
+function exportPPTX() {
+  showToast('⏳ Building PPTX…');
+  const br = BRAND[currentBrand];
+  const accent = br.accent.replace('#','');
+  const accentLight = br.accentLight.replace('#','');
+  const progName = v('f-prog-name') || 'Charms of the Capital';
+  const client   = v('f-client') || 'Client School';
+  const location = v('f-location') || 'Beijing, China';
+  const numDaysVal = v('f-num-days') || '5';
+  const price    = v('f-price') || 'TBC';
+
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE';
+  pptx.title  = `${progName} — ${br.name}`;
+
+  // Slide 1: Cover
+  const s1 = pptx.addSlide();
+  s1.background = {color: accent};
+  s1.addText(progName, {x:0.5,y:1.2,w:12,h:1.8,fontSize:44,color:'FFFFFF',bold:true,fontFace:'Georgia'});
+  s1.addText(v('f-hero-desc')||'', {x:0.5,y:3.1,w:9,h:1.5,fontSize:14,color:'FFFFFF',italic:true,fontFace:'Georgia',valign:'top'});
+  s1.addText(`Prepared for: ${client}`, {x:0.5,y:4.8,w:12,h:0.4,fontSize:12,color:'FFFFFF',italic:true,fontFace:'Poppins'});
+  s1.addText([{text:'📅 ',options:{fontSize:12}},{text:numDaysVal+' Days   ',options:{fontSize:12,color:'FFFFFF'}},{text:'📍 ',options:{fontSize:12}},{text:location,options:{fontSize:12,color:'FFFFFF'}}],{x:0.5,y:5.4,w:12,h:0.4,color:'FFFFFF',fontFace:'Poppins'});
+
+  // Slide 2: At a Glance
+  const s2 = pptx.addSlide();
+  s2.background = {color:'F9F6F2'};
+  s2.addText('Program at a Glance', {x:0.5,y:0.4,w:12,h:0.7,fontSize:28,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+  const facts=[['Duration',numDaysVal+' Days'],['Location',location],['Group Size',v('f-group-size')||'TBC'],['Travel Dates',v('f-date-start')&&v('f-date-end')?v('f-date-start')+' – '+v('f-date-end'):'TBC'],['Accommodation',v('f-accommodation')||'4-Star Hotels'],['Meals',v('f-meals')||'B/L/D'],['Investment',price]];
+  facts.forEach(([l,val],i)=>{
+    s2.addShape(pptx.ShapeType.rect,{x:0.5,y:1.2+i*0.55,w:12,h:0.48,fill:{color:i%2===0?'FFFFFF':'F2E0D0'},line:{color:'E5DDD4',width:0.5}});
+    s2.addText(l,{x:0.7,y:1.25+i*0.55,w:4,h:0.38,fontSize:11,color:'777777',bold:true,fontFace:'Poppins'});
+    s2.addText(val,{x:5,y:1.25+i*0.55,w:7.3,h:0.38,fontSize:12,color:l==='Investment'?accent:'1E1E1E',bold:true,fontFace:'Poppins',align:'right'});
+  });
+
+  // Slides 3+: Itinerary days
+  for(let i=0;i<numDays;i++){
+    const sd=pptx.addSlide();
+    sd.background={color:'FFFFFF'};
+    sd.addShape(pptx.ShapeType.ellipse,{x:0.4,y:0.35,w:0.65,h:0.65,fill:{color:accent},line:{color:accent}});
+    sd.addText(String(i+1),{x:0.4,y:0.35,w:0.65,h:0.65,fontSize:18,color:'FFFFFF',bold:true,align:'center',valign:'middle',fontFace:'Poppins'});
+    sd.addText(v(`d${i}-label`)||`Day ${i+1}`,{x:1.2,y:0.38,w:11,h:0.3,fontSize:10,color:accent,bold:true,charSpacing:3,fontFace:'Poppins'});
+    sd.addText(v(`d${i}-title`)||'',{x:1.2,y:0.72,w:11,h:0.65,fontSize:22,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+    const morning=v(`d${i}-morning`)||'';
+    const afternoon=v(`d${i}-afternoon`)||'';
+    const evening=v(`d${i}-evening`)||'';
+    let yOff=1.55;
+    if(morning){sd.addText('MORNING',{x:0.5,y:yOff,w:2,h:0.25,fontSize:8,color:'AAAAAA',bold:true,charSpacing:2,fontFace:'Poppins'});sd.addText(morning,{x:0.5,y:yOff+0.25,w:12.5,h:0.7,fontSize:12,color:'444444',fontFace:'Poppins',valign:'top'});yOff+=1.05;}
+    if(afternoon){sd.addText('AFTERNOON',{x:0.5,y:yOff,w:2.5,h:0.25,fontSize:8,color:'AAAAAA',bold:true,charSpacing:2,fontFace:'Poppins'});sd.addText(afternoon,{x:0.5,y:yOff+0.25,w:12.5,h:0.7,fontSize:12,color:'444444',fontFace:'Poppins',valign:'top'});yOff+=1.05;}
+    if(evening){sd.addText('EVENING',{x:0.5,y:yOff,w:2,h:0.25,fontSize:8,color:'AAAAAA',bold:true,charSpacing:2,fontFace:'Poppins'});sd.addText(evening,{x:0.5,y:yOff+0.25,w:12.5,h:0.7,fontSize:12,color:'444444',fontFace:'Poppins',valign:'top'});}
+  }
+
+  // Highlights slide
+  const sh=pptx.addSlide();
+  sh.background={color:'F9F6F2'};
+  sh.addText(v('f-hl-title')||'Program Highlights',{x:0.5,y:0.3,w:12,h:0.7,fontSize:28,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+  for(let i=0;i<6;i++){
+    const col=i%3,row=Math.floor(i/3);
+    sh.addShape(pptx.ShapeType.rect,{x:0.4+col*4.3,y:1.1+row*2.8,w:4.0,h:2.5,fill:{color:'FFFFFF'},line:{color:'E5DDD4',width:0.5}});
+    sh.addText(v(`h${i}-cat`)||'',{x:0.55+col*4.3,y:1.22+row*2.8,w:3.7,h:0.3,fontSize:8,color:accent,bold:true,charSpacing:2,fontFace:'Poppins'});
+    sh.addText(v(`h${i}-title`)||'',{x:0.55+col*4.3,y:1.52+row*2.8,w:3.7,h:0.55,fontSize:12,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+    sh.addText(v(`h${i}-desc`)||'',{x:0.55+col*4.3,y:2.1+row*2.8,w:3.7,h:1.2,fontSize:10,color:'777777',fontFace:'Poppins',valign:'top'});
+  }
+
+  // SDG slide
+  const ss=pptx.addSlide();
+  ss.background={color:'E6F0F3'};
+  ss.addText(v('f-sdg-title')||'Learning Outcomes',{x:0.5,y:0.3,w:12,h:0.7,fontSize:28,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+  for(let i=0;i<3;i++){
+    const sdgColor=(v(`sdg${i}-color`)||defaultSDGs[i].color).replace('#','');
+    ss.addShape(pptx.ShapeType.rect,{x:0.4+i*4.3,y:1.2,w:4.0,h:5.5,fill:{color:'FFFFFF'},line:{color:'E5DDD4',width:0.5}});
+    ss.addShape(pptx.ShapeType.rect,{x:0.55+i*4.3,y:1.35,w:0.7,h:0.7,fill:{color:sdgColor},line:{color:sdgColor}});
+    ss.addText(v(`sdg${i}-num`)||'',{x:0.55+i*4.3,y:1.35,w:0.7,h:0.7,fontSize:18,color:'FFFFFF',bold:true,align:'center',valign:'middle',fontFace:'Poppins'});
+    ss.addText(v(`sdg${i}-title`)||'',{x:0.55+i*4.3,y:2.2,w:3.7,h:0.6,fontSize:13,color:'1E1E1E',bold:true,fontFace:'Georgia'});
+    ss.addText(v(`sdg${i}-desc`)||'',{x:0.55+i*4.3,y:2.9,w:3.7,h:3.5,fontSize:11,color:'777777',fontFace:'Poppins',valign:'top'});
+  }
+
+  // CTA slide
+  const sc=pptx.addSlide();
+  sc.background={color:accent};
+  sc.addText(v('f-cta-h')||'',{x:1,y:1.5,w:11,h:1.5,fontSize:32,color:'FFFFFF',bold:true,align:'center',fontFace:'Georgia'});
+  sc.addText(v('f-cta-body')||'',{x:1.5,y:3.2,w:10,h:1.5,fontSize:14,color:'FFFFFF',align:'center',fontFace:'Poppins'});
+  sc.addShape(pptx.ShapeType.roundRect,{x:3.5,y:5.0,w:3.5,h:0.65,fill:{color:'FFFFFF'},line:{color:'FFFFFF'},rectRadius:0.06});
+  sc.addText(v('f-cta-btn1')||'Contact Us',{x:3.5,y:5.0,w:3.5,h:0.65,fontSize:13,color:accent,bold:true,align:'center',valign:'middle',fontFace:'Poppins'});
+  sc.addText(v('f-ft-email')||'',{x:1,y:5.9,w:11,h:0.4,fontSize:12,color:'FFFFFF',align:'center',fontFace:'Poppins'});
+
+  pptx.writeFile({fileName:`WCE-${progName.replace(/\s+/g,'-')}-Proposal.pptx`})
+    .then(()=>showToast('✅ PPTX downloaded!'))
+    .catch(e=>showToast('❌ Error: '+e.message));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════════
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', ()=>{
+  // Auto-set today's date
+  const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('f-date').value = today;
+
+  // Init dynamic editors
+  initHighlightsEditor();
+  initGalleryEditor();
+  syncDays();
+  initSDGEditor();
+  initAccomEditor();
+  initTransportEditor();
+  initQuotationEditor();
+  buildProgEditor();
+  initFooterLinks();
+
+  // Device init
+  document.getElementById('ifr-desk').style.display = 'block';
+  document.getElementById('ifr-mob').style.display = 'none';
+
+  // Initial render
+  refreshPreview();
+
+  // Auto-save every 90s
+  setInterval(saveDraft, 90000);
+
+  // Responsive tabs: collapse to hamburger when panel is too narrow
+  const tabsBar = document.getElementById('tabs-bar');
+  if (tabsBar && window.ResizeObserver) {
+    const ro = new ResizeObserver(() => checkTabsOverflow());
+    ro.observe(tabsBar.parentElement);
+  }
+  checkTabsOverflow();
+});
+</script>
+</body>
+</html>
