@@ -232,9 +232,13 @@ body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
       <svg id="theme-icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       <svg id="theme-icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-    <button class="xbtn save" onclick="saveDraft()">
+    <button class="xbtn save" onclick="saveDraft()" title="Save draft to browser storage (Ctrl+S)">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       Save Draft
+    </button>
+    <button class="xbtn save" onclick="clearDraft()" title="Clear saved draft and reset to defaults" style="opacity:0.6;font-size:0.65rem;padding:0.4em 0.6em;">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      Reset
     </button>
     <button class="xbtn share" onclick="shareHTML()">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -709,7 +713,7 @@ body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
 
 <div class="statusbar">
   <div class="si"><div class="sdot"></div> Live sync</div>
-  <div class="si" id="si-saved">Draft auto-saved</div>
+  <div class="si" id="si-saved"><span id="autosave-dot" style="width:5px;height:5px;border-radius:50%;background:#7EC8A0;display:inline-block;margin-right:4px;transition:background 0.3s;"></span><span id="autosave-label">No changes yet</span></div>
   <div class="si">Georgia + Poppins</div>
   <div class="si" id="si-brand">WildChina Education</div>
 </div>
@@ -2133,6 +2137,7 @@ function liveUpdate() {
     document.getElementById('tb-prog').textContent = prog;
     document.getElementById('tb-client').textContent = client;
   }, 200);
+  scheduleAutoSave();
 }
 
 function refreshPreview() {
@@ -2147,28 +2152,254 @@ function refreshPreview() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SAVE / LOAD
+// AUTO-SAVE / LOAD  (localStorage key: wce-proposal-v4)
 // ═══════════════════════════════════════════════════════════════════
-function saveDraft() {
-  const ids = ['f-client','f-date','f-bd-name','f-bd-email','f-bd-phone','f-prog-name','f-location','f-num-days','f-date-start','f-date-end','f-group-size','f-accommodation','f-meals','f-price','f-hero-title','f-hero-desc','f-hero-client','f-cta1','f-cta2','f-ov-heading','f-ov-p1','f-ov-p2','f-ov-p3','f-hl-label','f-hl-title','f-itin-note','f-sdg-label','f-sdg-title','f-ep-label','f-ep-title','f-cta-h','f-cta-body','f-cta-btn1','f-cta-btn2','f-ft-tag','f-ft-email','f-ft-offices','f-ft-li','f-ft-yt','f-fc1-title','f-fc2-title','f-fc3-title'];
-  const data = {brand: currentBrand, progCount, numDays};
-  ids.forEach(id => { const el=document.getElementById(id); if(el) data[id]=el.value; });
-  // highlights
-  for(let i=0;i<6;i++) ['cat','title','desc'].forEach(f=>{ const el=document.getElementById(`h${i}-${f}`); if(el) data[`h${i}-${f}`]=el.value; });
-  // gallery
-  for(let i=0;i<7;i++) { const el=document.getElementById(`gal-cap-${i}`); if(el) data[`gal-cap-${i}`]=el.value; }
-  // days
-  for(let i=0;i<numDays;i++) {
-    ['label','title','morning','afternoon','evening','meals'].forEach(f=>{ const el=document.getElementById(`d${i}-${f}`); if(el) data[`d${i}-${f}`]=el.value; });
-    Object.keys(ACT_CATS).forEach(cat=>{ const el=document.getElementById(`d${i}-act-${cat.replace(/\s/g,'_')}`); if(el) data[`d${i}-act-${cat.replace(/\s/g,'_')}`]=el.value; });
+
+let _hasUnsavedChanges = false;
+let _autoSaveDebounce  = null;
+
+/* ── Collect all field values into a plain object ── */
+function collectDraft() {
+  const ids = ['f-client','f-date','f-bd-name','f-bd-email','f-bd-phone',
+    'f-prog-name','f-location','f-num-days','f-date-start','f-date-end',
+    'f-group-size','f-accommodation','f-meals','f-price',
+    'f-hero-title','f-hero-desc','f-hero-client','f-cta1','f-cta2',
+    'f-ov-heading','f-ov-p1','f-ov-p2','f-ov-p3',
+    'f-hl-label','f-hl-title','f-itin-note','f-sdg-label','f-sdg-title',
+    'f-ep-label','f-ep-title','f-cta-h','f-cta-body','f-cta-btn1','f-cta-btn2',
+    'f-ft-tag','f-ft-email','f-ft-offices','f-ft-li','f-ft-yt',
+    'f-fc1-title','f-fc2-title','f-fc3-title',
+    'f-quot-desc','f-quot-cost'];
+  const data = {
+    brand: currentBrand,
+    progCount,
+    numDays,
+    hlCount,
+    theme: currentTheme,
+    accomShow: document.getElementById('f-accom-show')?.checked,
+    transShow: document.getElementById('f-trans-show')?.checked,
+    quotShow:  document.getElementById('f-quot-show')?.checked,
+    quotMode:  document.querySelector('input[name="quot-mode"]:checked')?.value || 'set'
+  };
+  ids.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
+
+  // Highlights
+  for (let i = 0; i < 6; i++)
+    ['cat','title','desc'].forEach(f => {
+      const el = document.getElementById(`h${i}-${f}`); if (el) data[`h${i}-${f}`] = el.value;
+    });
+
+  // Gallery captions
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById(`gal-cap-${i}`); if (el) data[`gal-cap-${i}`] = el.value;
   }
-  // sdgs
-  for(let i=0;i<3;i++) ['num','title','desc','color'].forEach(f=>{ const el=document.getElementById(`sdg${i}-${f}`); if(el) data[`sdg${i}-${f}`]=el.value; });
-  // programs
-  for(let i=0;i<progCount;i++) ['city','title','url'].forEach(f=>{ const el=document.getElementById(`ep${i}-${f}`); if(el) data[`ep${i}-${f}`]=el.value; });
-  localStorage.setItem('wce-proposal-v4', JSON.stringify(data));
-  document.getElementById('si-saved').textContent = 'Saved ' + new Date().toLocaleTimeString();
-  showToast('✅ Draft saved');
+
+  // Itinerary days
+  for (let i = 0; i < numDays; i++) {
+    ['label','title','morning','afternoon','evening','meals'].forEach(f => {
+      const el = document.getElementById(`d${i}-${f}`); if (el) data[`d${i}-${f}`] = el.value;
+    });
+    Object.keys(ACT_CATS).forEach(cat => {
+      const el = document.getElementById(`d${i}-act-${cat.replace(/\s/g,'_')}`);
+      if (el) data[`d${i}-act-${cat.replace(/\s/g,'_')}`] = el.value;
+    });
+  }
+
+  // SDGs
+  for (let i = 0; i < 3; i++)
+    ['num','title','desc','color'].forEach(f => {
+      const el = document.getElementById(`sdg${i}-${f}`); if (el) data[`sdg${i}-${f}`] = el.value;
+    });
+
+  // Explore More programs
+  for (let i = 0; i < progCount; i++)
+    ['city','title','url'].forEach(f => {
+      const el = document.getElementById(`ep${i}-${f}`); if (el) data[`ep${i}-${f}`] = el.value;
+    });
+
+  // Quotation included / excluded items
+  data._quotIncluded = Array.from(
+    document.querySelectorAll('#quot-included-editor .footer-link-row input[type="text"]')
+  ).map(i => i.value);
+  data._quotExcluded = Array.from(
+    document.querySelectorAll('#quot-excluded-editor .footer-link-row input[type="text"]')
+  ).map(i => i.value);
+
+  // Quotation tiers
+  data._quotTiers = Array.from(
+    document.querySelectorAll('#quot-tiers-editor .footer-link-row')
+  ).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { students: inputs[0]?.value || '', cost: inputs[1]?.value || '' };
+  });
+
+  // Footer links
+  ['fc1','fc2','fc3'].forEach(col => {
+    data[`_${col}Links`] = Array.from(
+      document.querySelectorAll(`#${col}-links .footer-link-row`)
+    ).map(row => {
+      const inputs = row.querySelectorAll('input');
+      return { label: inputs[0]?.value || '', url: inputs[1]?.value || '' };
+    });
+  });
+
+  // Transport legs
+  data._transLegs = Array.from(
+    document.querySelectorAll('#transport-editor .day-card')
+  ).map(card => ({
+    date:   card.querySelector('.tr-date')?.value  || '',
+    type:   card.querySelector('.tr-type')?.value  || 'Flight',
+    number: card.querySelector('.tr-num')?.value   || '',
+    route:  card.querySelector('.tr-route')?.value || '',
+    dep:    card.querySelector('.tr-dep')?.value   || '',
+    arr:    card.querySelector('.tr-arr')?.value   || '',
+    price:  card.querySelector('.tr-price')?.value || ''
+  }));
+
+  // Accommodation options
+  data._accomOptions = Array.from(
+    document.querySelectorAll('#accom-options-editor .day-card')
+  ).map(card => ({
+    name:     card.querySelector('.ac-name')?.value     || '',
+    addr:     card.querySelector('.ac-addr')?.value     || '',
+    duration: card.querySelector('.ac-duration')?.value || '',
+    safety:   card.querySelector('.ac-safety')?.value   || '',
+    note:     card.querySelector('.ac-note')?.value     || ''
+  }));
+
+  return data;
+}
+
+/* ── Write to localStorage and update the status indicator ── */
+function saveDraft(silent = false) {
+  try {
+    const data = collectDraft();
+    localStorage.setItem('wce-proposal-v4', JSON.stringify(data));
+    _hasUnsavedChanges = false;
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dot   = document.getElementById('autosave-dot');
+    const label = document.getElementById('autosave-label');
+    if (dot)   { dot.style.background = '#7EC8A0'; }
+    if (label) { label.textContent = 'Saved ' + now; }
+    if (!silent) showToast('✅ Draft saved — ' + now);
+  } catch (e) {
+    console.warn('Auto-save failed:', e);
+    showToast('⚠️ Save failed — storage may be full');
+  }
+}
+
+/* ── Mark as dirty (unsaved changes) ── */
+function markDirty() {
+  _hasUnsavedChanges = true;
+  const dot   = document.getElementById('autosave-dot');
+  const label = document.getElementById('autosave-label');
+  if (dot)   { dot.style.background = '#FFA726'; }
+  if (label) { label.textContent = 'Unsaved changes…'; }
+}
+
+/* ── Debounced auto-save: fires 2 s after the last keystroke ── */
+function scheduleAutoSave() {
+  markDirty();
+  clearTimeout(_autoSaveDebounce);
+  _autoSaveDebounce = setTimeout(() => saveDraft(true), 2000);
+}
+
+/* ── Restore a saved draft into the editor fields ── */
+function loadDraft() {
+  const raw = localStorage.getItem('wce-proposal-v4');
+  if (!raw) return false;
+  let data;
+  try { data = JSON.parse(raw); } catch { return false; }
+
+  // Restore simple fields
+  Object.keys(data).forEach(id => {
+    if (id.startsWith('_') || ['brand','progCount','numDays','hlCount',
+        'theme','accomShow','transShow','quotShow','quotMode'].includes(id)) return;
+    const el = document.getElementById(id);
+    if (el && el.tagName !== 'BUTTON') el.value = data[id];
+  });
+
+  // Restore theme
+  if (data.theme && data.theme !== currentTheme) toggleTheme();
+
+  // Restore counts (must happen before rebuilding dynamic editors)
+  if (data.progCount) { progCount = data.progCount; document.getElementById('prog-count-display').textContent = progCount; }
+  if (data.numDays)   { numDays   = data.numDays;   document.getElementById('f-num-days').value = numDays; }
+  if (data.hlCount)   { hlCount   = data.hlCount;   document.getElementById('hl-count-display').textContent = hlCount; }
+
+  // Rebuild dynamic editors with restored counts
+  buildHighlightsEditor();
+  syncDays();
+  buildProgEditor();
+
+  // Re-apply field values that were inside dynamic editors
+  Object.keys(data).forEach(id => {
+    if (id.startsWith('_') || ['brand','progCount','numDays','hlCount',
+        'theme','accomShow','transShow','quotShow','quotMode'].includes(id)) return;
+    const el = document.getElementById(id);
+    if (el && el.tagName !== 'BUTTON') el.value = data[id];
+  });
+
+  // Restore checkboxes
+  if (data.accomShow !== undefined) { const el = document.getElementById('f-accom-show'); if (el) el.checked = data.accomShow; }
+  if (data.transShow !== undefined) { const el = document.getElementById('f-trans-show'); if (el) el.checked = data.transShow; }
+  if (data.quotShow  !== undefined) { const el = document.getElementById('f-quot-show');  if (el) el.checked = data.quotShow; }
+
+  // Restore quotation mode radio
+  if (data.quotMode) {
+    const radio = document.querySelector(`input[name="quot-mode"][value="${data.quotMode}"]`);
+    if (radio) {
+      radio.checked = true;
+      document.getElementById('quot-set-fields').style.display    = data.quotMode === 'set'    ? 'block' : 'none';
+      document.getElementById('quot-tiered-fields').style.display = data.quotMode === 'tiered' ? 'block' : 'none';
+    }
+  }
+
+  // Restore quotation included / excluded items
+  if (Array.isArray(data._quotIncluded)) {
+    const el = document.getElementById('quot-included-editor'); el.innerHTML = '';
+    data._quotIncluded.forEach(item => addQuotItemRow('included', item));
+  }
+  if (Array.isArray(data._quotExcluded)) {
+    const el = document.getElementById('quot-excluded-editor'); el.innerHTML = '';
+    data._quotExcluded.forEach(item => addQuotItemRow('excluded', item));
+  }
+
+  // Restore quotation tiers
+  if (Array.isArray(data._quotTiers)) {
+    const el = document.getElementById('quot-tiers-editor'); el.innerHTML = '';
+    data._quotTiers.forEach(t => addQuotTierRow(t));
+  }
+
+  // Restore footer links
+  ['fc1','fc2','fc3'].forEach(col => {
+    const links = data[`_${col}Links`];
+    if (!Array.isArray(links)) return;
+    const el = document.getElementById(`${col}-links`); el.innerHTML = '';
+    links.forEach(lnk => addFooterLinkRow(col, lnk.label, lnk.url));
+  });
+
+  // Restore transport legs
+  if (Array.isArray(data._transLegs)) {
+    const el = document.getElementById('transport-editor'); el.innerHTML = '';
+    data._transLegs.forEach(t => addTransportLegRow(t));
+  }
+
+  // Restore accommodation options
+  if (Array.isArray(data._accomOptions)) {
+    accomCount = 0;
+    const el = document.getElementById('accom-options-editor'); el.innerHTML = '';
+    data._accomOptions.forEach(a => addAccomOptionRow(a));
+  }
+
+  return true;
+}
+
+/* ── Clear saved draft (with confirmation) ── */
+function clearDraft() {
+  if (!confirm('Clear all saved data and reset to defaults?')) return;
+  localStorage.removeItem('wce-proposal-v4');
+  location.reload();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2312,6 +2543,14 @@ function showToast(msg) {
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
+// Ctrl+S / Cmd+S → manual save
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveDraft();
+  }
+});
+
 window.addEventListener('DOMContentLoaded', ()=>{
   // Auto-set today's date
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
@@ -2335,8 +2574,27 @@ window.addEventListener('DOMContentLoaded', ()=>{
   // Initial render
   refreshPreview();
 
-  // Auto-save every 90s
-  setInterval(saveDraft, 90000);
+  // ── Auto-save: restore last session, then save on every change ──
+  const restored = loadDraft();
+  if (restored) {
+    const dot   = document.getElementById('autosave-dot');
+    const label = document.getElementById('autosave-label');
+    if (dot)   dot.style.background = '#7EC8A0';
+    if (label) label.textContent = 'Session restored';
+    showToast('📂 Last session restored automatically');
+    refreshPreview();
+  }
+
+  // Periodic backup every 60 s (silent, belt-and-suspenders)
+  setInterval(() => { if (_hasUnsavedChanges) saveDraft(true); }, 60000);
+
+  // Warn before closing if there are unsaved changes
+  window.addEventListener('beforeunload', e => {
+    if (_hasUnsavedChanges) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 
   // Responsive tabs: collapse to hamburger when panel is too narrow
   const tabsBar = document.getElementById('tabs-bar');
