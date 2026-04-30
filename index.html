@@ -195,6 +195,22 @@ body{font-family:var(--font-ui);background:var(--ed-bg);color:var(--ed-text);dis
 .toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ed-panel);border:1px solid var(--ed-border);border-left:3px solid var(--accent);color:var(--ed-text);font-size:0.75rem;font-weight:500;padding:0.6rem 1.1rem;border-radius:5px;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:9999;opacity:0;transition:opacity 0.22s,transform 0.22s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* GITHUB MODAL */
+.gh-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.gh-modal{background:var(--ed-panel);border:1px solid var(--ed-border);border-radius:10px;padding:1.6rem 1.8rem;width:min(480px,92vw);box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.gh-modal h3{font-size:0.85rem;font-weight:700;color:var(--ed-text);margin-bottom:0.25rem;display:flex;align-items:center;gap:0.5rem;}
+.gh-modal p{font-size:0.68rem;color:var(--ed-muted);margin-bottom:1.1rem;line-height:1.6;}
+.gh-field{margin-bottom:0.75rem;}
+.gh-field label{display:block;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ed-muted);margin-bottom:0.3rem;}
+.gh-field input{width:100%;background:var(--ed-input);border:1px solid var(--ed-input-border);border-radius:4px;padding:0.5em 0.7em;font-family:var(--font-ui);font-size:0.75rem;color:var(--ed-text);outline:none;}
+.gh-field input:focus{border-color:var(--accent);}
+.gh-field .gh-hint{font-size:0.6rem;color:var(--ed-muted);margin-top:0.25rem;line-height:1.5;}
+.gh-field .gh-hint a{color:var(--accent);}
+.gh-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.1rem;}
+.gh-progress{font-size:0.72rem;color:var(--ed-muted);margin-top:0.75rem;min-height:1.2em;text-align:center;}
+.gh-live-link{display:none;margin-top:0.75rem;padding:0.6rem 0.8rem;background:rgba(220,127,52,0.1);border:1px solid rgba(220,127,52,0.3);border-radius:5px;font-size:0.72rem;color:var(--ed-text);text-align:center;}
+.gh-live-link a{color:var(--accent);font-weight:700;word-break:break-all;}
+
 /* SDG SWATCHES */
 .sdg-swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:0.3rem;margin-top:0.3rem;}
 .sdg-sw{width:100%;aspect-ratio:1;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s,transform 0.15s;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;color:#fff;}
@@ -243,6 +259,10 @@ body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
     <button class="xbtn share" onclick="shareHTML()">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Share HTML
+    </button>
+    <button class="xbtn share" onclick="openGHModal()" title="Publish proposal directly to GitHub Pages" style="background:rgba(220,127,52,0.28);border-color:rgba(220,127,52,0.55);">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Publish Online
     </button>
     <button class="xbtn pdf" onclick="exportPDF()">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -719,6 +739,55 @@ body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ═══ GITHUB PUBLISH MODAL ═══ -->
+<div class="gh-overlay" id="gh-overlay" style="display:none;" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal">
+    <h3>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:var(--accent)"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Publish Proposal to GitHub
+    </h3>
+    <p>Your proposal will be uploaded to your GitHub repository and instantly live at a public URL via GitHub Pages.</p>
+
+    <div class="gh-field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off"/>
+      <div class="gh-hint">
+        Create one at <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a>
+        — tick <strong>repo</strong> scope only. Token is never stored or sent anywhere except GitHub's API.
+      </div>
+    </div>
+
+    <div class="gh-field">
+      <label>GitHub Username</label>
+      <input type="text" id="gh-user" placeholder="e.g. johndoe" autocomplete="off"/>
+    </div>
+
+    <div class="gh-field">
+      <label>Repository Name</label>
+      <input type="text" id="gh-repo" placeholder="e.g. wce-proposal" autocomplete="off"/>
+      <div class="gh-hint">Must be a <strong>public</strong> repository with GitHub Pages enabled (branch: main, folder: / root).</div>
+    </div>
+
+    <div class="gh-field">
+      <label>File Name in Repo</label>
+      <input type="text" id="gh-filename" placeholder="e.g. index.html or proposals/beijing.html" autocomplete="off"/>
+      <div class="gh-hint">Use <strong>index.html</strong> to make it the homepage. Or use a subfolder like <strong>proposals/beijing-2025.html</strong> for multiple proposals.</div>
+    </div>
+
+    <div class="gh-actions">
+      <button class="xbtn save" onclick="closeGHModal()">Cancel</button>
+      <button class="xbtn pptx" id="gh-publish-btn" onclick="publishToGitHub()">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        Publish Now
+      </button>
+    </div>
+    <div class="gh-progress" id="gh-progress"></div>
+    <div class="gh-live-link" id="gh-live-link">
+      🌐 Live at: <a id="gh-live-url" href="#" target="_blank"></a>
+    </div>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
@@ -2528,6 +2597,153 @@ function exportPPTX() {
   pptx.writeFile({fileName:`WCE-${progName.replace(/\s+/g,'-')}-Proposal.pptx`})
     .then(()=>showToast('✅ PPTX downloaded!'))
     .catch(e=>showToast('❌ Error: '+e.message));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GITHUB PUBLISH  — uses GitHub Contents API (no backend needed)
+// ═══════════════════════════════════════════════════════════════════
+
+// Persist GitHub settings in localStorage (token excluded for security)
+function saveGHSettings() {
+  localStorage.setItem('wce-gh-settings', JSON.stringify({
+    user:     document.getElementById('gh-user').value.trim(),
+    repo:     document.getElementById('gh-repo').value.trim(),
+    filename: document.getElementById('gh-filename').value.trim()
+  }));
+}
+
+function loadGHSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('wce-gh-settings') || '{}');
+    if (s.user)     document.getElementById('gh-user').value     = s.user;
+    if (s.repo)     document.getElementById('gh-repo').value     = s.repo;
+    if (s.filename) document.getElementById('gh-filename').value = s.filename;
+  } catch {}
+}
+
+function openGHModal() {
+  loadGHSettings();
+  // Pre-fill filename from program name if empty
+  const fn = document.getElementById('gh-filename');
+  if (!fn.value) {
+    const prog = (v('f-prog-name') || v('f-hero-title') || 'proposal')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    fn.value = `proposals/${prog}.html`;
+  }
+  document.getElementById('gh-progress').textContent = '';
+  document.getElementById('gh-live-link').style.display = 'none';
+  document.getElementById('gh-overlay').style.display = 'flex';
+}
+
+function closeGHModal() {
+  document.getElementById('gh-overlay').style.display = 'none';
+}
+
+async function publishToGitHub() {
+  const token    = document.getElementById('gh-token').value.trim();
+  const user     = document.getElementById('gh-user').value.trim();
+  const repo     = document.getElementById('gh-repo').value.trim();
+  const filename = document.getElementById('gh-filename').value.trim() || 'index.html';
+
+  if (!token || !user || !repo) {
+    setGHProgress('⚠️ Please fill in Token, Username, and Repository.', 'warning');
+    return;
+  }
+
+  const btn = document.getElementById('gh-publish-btn');
+  btn.disabled = true;
+  btn.textContent = 'Publishing…';
+  saveGHSettings();
+
+  try {
+    // Step 1: Build the proposal HTML
+    setGHProgress('⏳ Building proposal HTML…');
+    const proposalHTML = buildHTML();
+    const encoded = btoa(unescape(encodeURIComponent(proposalHTML)));
+
+    // Step 2: Check if file already exists (need its SHA to update)
+    setGHProgress('🔍 Checking existing file…');
+    const apiBase = `https://api.github.com/repos/${user}/${repo}/contents/${filename}`;
+    const headers = {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    };
+
+    let sha = null;
+    const checkRes = await fetch(apiBase, { headers });
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      sha = existing.sha;
+      setGHProgress('📝 File exists — updating…');
+    } else if (checkRes.status === 404) {
+      setGHProgress('✨ Creating new file…');
+    } else if (checkRes.status === 401) {
+      throw new Error('Invalid token — check your GitHub Personal Access Token.');
+    } else if (checkRes.status === 403) {
+      throw new Error('Access denied — make sure the token has "repo" scope.');
+    } else {
+      throw new Error(`GitHub API error: ${checkRes.status} ${checkRes.statusText}`);
+    }
+
+    // Step 3: Commit the file
+    const progName = v('f-prog-name') || v('f-hero-title') || 'Proposal';
+    const client   = v('f-client') || 'Client';
+    const commitMsg = `Update proposal: ${progName} — ${client} (${new Date().toISOString().slice(0,10)})`;
+
+    const body = { message: commitMsg, content: encoded };
+    if (sha) body.sha = sha;
+
+    setGHProgress('⬆️ Uploading to GitHub…');
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || `Upload failed: ${putRes.status}`);
+    }
+
+    // Step 4: Build the live URL
+    // GitHub Pages URL: https://{user}.github.io/{repo}/{filename}
+    // If filename is index.html at root, URL is just https://{user}.github.io/{repo}/
+    let liveURL;
+    if (filename === 'index.html') {
+      liveURL = `https://${user}.github.io/${repo}/`;
+    } else {
+      liveURL = `https://${user}.github.io/${repo}/${filename}`;
+    }
+
+    setGHProgress('✅ Published successfully!');
+    const linkEl  = document.getElementById('gh-live-link');
+    const urlEl   = document.getElementById('gh-live-url');
+    urlEl.href    = liveURL;
+    urlEl.textContent = liveURL;
+    linkEl.style.display = 'block';
+
+    showToast('🚀 Proposal published to GitHub Pages!');
+
+    // Copy URL to clipboard
+    try {
+      await navigator.clipboard.writeText(liveURL);
+      setGHProgress('✅ Published! URL copied to clipboard.');
+    } catch {}
+
+  } catch (err) {
+    setGHProgress('❌ ' + err.message, 'error');
+    showToast('❌ Publish failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg> Publish Now`;
+  }
+}
+
+function setGHProgress(msg, type) {
+  const el = document.getElementById('gh-progress');
+  el.textContent = msg;
+  el.style.color = type === 'error' ? '#ff8080' : type === 'warning' ? '#FFA726' : 'var(--ed-muted)';
 }
 
 // ═══════════════════════════════════════════════════════════════════
