@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Charms of the Capital — WildChina Education</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Poppins','Helvetica Neue',Arial,sans-serif;background:#F9F6F2;color:#1E1E1E;line-height:1.7;-webkit-font-smoothing:antialiased;}
+img{display:block;max-width:100%;height:auto;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+.container{width:100%;max-width:1160px;margin-inline:auto;padding-inline:clamp(1.25rem,5vw,2.5rem);}
+.section{padding-block:clamp(2.5rem,5vw,4.5rem);}
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr!important;}
+  .hero-map-wrap{display:none!important;}
+  .intro-grid{grid-template-columns:1fr!important;}
+  .hl-grid{grid-template-columns:1fr!important;}
+  .sdg-grid{grid-template-columns:1fr!important;}
+  .ft-grid{grid-template-columns:1fr!important;gap:1.5rem!important;}
+  .nav-links{display:none!important;}
+  .nav-cta-btn{display:none!important;}
+  #nav-hamburger{display:flex!important;}
+}
+@media(min-width:769px){
+  #nav-hamburger{display:none!important;}
+  #nav-mobile-menu{display:none!important;}
+}
+@media print{.nav{display:none!important;}body{background:#fff;}}
+
+/* DAY MODE OVERRIDES */
+body.day .day-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .prog-card{background:rgba(220,127,52,0.05);border-color:rgba(220,127,52,0.2);}
+body.day .xbtn.save{background:rgba(220,127,52,0.1);color:var(--ed-text);border-color:rgba(220,127,52,0.3);}
+body.day .xbtn.pdf{background:#f5e8d8;color:#5a3010;border-color:rgba(220,127,52,0.3);}
+body.day .cnt-btn{background:rgba(220,127,52,0.1);border-color:rgba(220,127,52,0.25);}
+body.day .add-link-btn{background:rgba(220,127,52,0.06);color:var(--ed-muted);}
+body.day .footer-link-row button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .prog-card-hdr button{background:rgba(220,0,0,0.08);color:#c0392b;}
+body.day .dev-toggle{background:rgba(220,127,52,0.1);}
+body.day .prev-url{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn{background:rgba(220,127,52,0.08);border-color:rgba(220,127,52,0.2);}
+body.day .ref-btn:hover{background:rgba(220,127,52,0.18);}
+body.day .pw.desktop .prev-iframe{box-shadow:0 4px 24px rgba(180,100,30,0.15);}
+</style>
+</head>
+<body class="night">
+
+<!-- NAV -->
+<nav class="nav" style="background:#DC7F34;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:0.85rem;">
+      <!-- LOGO — never hidden -->
+      <a href="https://www.wildchinaeducation.com" style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;text-decoration:none;">
+        <div style="width:44px;height:44px;background:#fff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.4rem;font-weight:700;color:#DC7F34;">野</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;">
+          <strong style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#fff;letter-spacing:0.01em;display:block;">WildChina Education</strong>
+          <span style="font-size:0.55rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.72);display:block;">Learn Something Life-Changing</span>
+        </div>
+      </a>
+      <!-- DESKTOP NAV LINKS -->
+      <ul class="nav-links" style="display:flex;align-items:center;gap:1.2rem;list-style:none;margin:0;padding:0;">
+        <li><a href="https://www.wildchinaeducation.com" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Programs in China</a></li>
+        <li><a href="https://www.wildchinaeducation.com/mba" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">MBA Trips</a></li>
+        <li><a href="https://www.wildchinaeducation.com/programs-abroad/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Programs Abroad</a></li>
+        <li><a href="https://www.wildchinaeducation.com/about-us/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">About</a></li>
+        <li><a href="https://www.wildchinaeducation.com/contact-us" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;">Contact Us</a></li>
+        <li><a href="https://wildchina.com/" style="font-size:0.72rem;font-weight:600;color:rgba(255,255,255,0.88);text-decoration:none;" target="_blank" rel="noopener">WildChina</a></li>
+      </ul>
+      <!-- DESKTOP CTA -->
+      <a href="https://www.wildchinaeducation.com/#" class="nav-cta-btn" style="display:inline-flex;align-items:center;font-size:0.68rem;font-weight:700;padding:0.45em 0.9em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.7);white-space:nowrap;text-decoration:none;flex-shrink:0;">Free Resources</a>
+      <!-- HAMBURGER BUTTON (mobile / narrow) -->
+      <button id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu" style="display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;flex-shrink:0;">
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+        <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;transition:all 0.2s;"></span>
+      </button>
+    </div>
+  </div>
+  <!-- MOBILE DROPDOWN MENU -->
+  <div id="nav-mobile-menu" style="display:none;background:#b8612a;border-top:1px solid rgba(255,255,255,0.15);">
+    <div class="container" style="padding-block:0.75rem;">
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;">
+        <li><a href="https://www.wildchinaeducation.com" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Programs in China</a></li>
+        <li><a href="https://www.wildchinaeducation.com/mba" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">MBA Trips</a></li>
+        <li><a href="https://www.wildchinaeducation.com/programs-abroad/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Programs Abroad</a></li>
+        <li><a href="https://www.wildchinaeducation.com/about-us/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">About</a></li>
+        <li><a href="https://www.wildchinaeducation.com/blog" style="display:block;padding:0.6rem 0 0.6rem 1rem;font-size:0.78rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.08);">↳ Blog</a></li>
+        <li><a href="https://www.wildchinaeducation.com/job" style="display:block;padding:0.6rem 0 0.6rem 1rem;font-size:0.78rem;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">↳ Join Our Team</a></li>
+        <li><a href="https://www.wildchinaeducation.com/contact-us" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);">Contact Us</a></li>
+        <li><a href="https://wildchina.com/" style="display:block;padding:0.6rem 0;font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.1);" target="_blank" rel="noopener">WildChina ↗</a></li>
+        <li style="padding-top:0.6rem;"><a href="https://www.wildchinaeducation.com/#" style="display:inline-flex;align-items:center;font-size:0.78rem;font-weight:700;padding:0.5em 1.1em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.7);text-decoration:none;">Free Resources</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="hero" style="background:#DC7F34;padding:clamp(4rem,9vw,7rem) 0 clamp(3rem,6vw,5rem);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.025) 40px,rgba(0,0,0,0.025) 41px);"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="hero-grid" style="display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:center;">
+      <div style="max-width:680px;">
+        <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.2rem,5.5vw,4rem);font-weight:700;line-height:1.05;color:#fff;margin-bottom:1.1rem;">Charms of the Capital</h1>
+        <p style="font-family:'Poppins',sans-serif;font-size:clamp(0.88rem,1.4vw,1rem);color:rgba(255,255,255,0.88);line-height:1.55;max-width:580px;margin-bottom:0.75rem;">Immerse yourself in Beijing's living history as you explore hidden hutongs, hike the Great Wall, and connect with locals through martial arts, community service, and hands-on cultural experiences that bring the capital's rich heritage to life.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:1.1rem;margin-bottom:1.75rem;">
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            5 Days
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Beijing, China
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Dulwich College Shanghai
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.7rem;">
+          <a href="#overview" onclick="document.getElementById('overview').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:#fff;color:#DC7F34;box-shadow:0 2px 8px rgba(0,0,0,0.2);">Explore the Program</a>
+          <a href="#itinerary" onclick="document.getElementById('itinerary').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.8);">View Itinerary</a>
+        </div>
+      </div>
+      <div class="hero-map-wrap" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+        <div style="width:312px;height:312px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:0.4rem;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span style="font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.5);">Beijing, China</span>
+       </div>
+        </div>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);">Beijing, China</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<section class="section" id="overview" style="background:#fff;">
+  <div class="container">
+    <div class="intro-grid" style="display:grid;grid-template-columns:1fr 320px;gap:clamp(2rem,5vw,4rem);align-items:start;">
+      <div>
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Program Overview</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;margin-bottom:1.1rem;">Experience the Heart of Beijing</h2>
+        <div style="font-size:0.95rem;color:#444;line-height:1.85;">
+          <p>Experience the heart of Beijing through interactive adventures — from racing through ancient hutongs and exploring the Forbidden City to practicing calligraphy, Kung Fu, and crafting your own Peking Opera mask.</p>
+          <p style="margin-top:0.9rem;">Hike the Great Wall at Mutianyu, savor iconic local dishes like Peking duck and mutton hotpot, and connect with locals through dumpling-making, square dancing, and community surveys.</p>
+          <p style="margin-top:0.9rem;">Wrap up your journey by volunteering at a local orphanage, leaving with unforgettable memories and a deeper understanding of China's culture, history, and people.</p>
+        </div>
+      </div>
+      <aside style="background:#F9F6F2;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;flex-shrink:0;">
+        <div style="background:#DC7F34;padding:0.9rem 1.1rem;">
+          <h3 style="font-family:Georgia,serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;color:#fff;">Program at a Glance</h3>
+        </div>
+        <div>
+          
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Duration</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">5 Days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Location</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">Beijing, China</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Group Size</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">24 students + 3 teachers</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Travel Dates</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">4 May 2026 – 8 May 2026</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Accommodation</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">4-Star Hotels</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;border-bottom:1px solid #E5DDD4;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Meals</span>
+            <span style="font-size:0.82rem;font-weight:600;color:#1E1E1E;text-align:right;">B / L / D Included</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;gap:0.75rem;">
+            <span style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#777;">Investment</span>
+            <span style="font-size:0.82rem;font-weight:700;color:#DC7F34;text-align:right;">USD 1,850 per student</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section style="background:#fff;padding-bottom:clamp(2.5rem,5vw,4.5rem);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:0.65rem;">
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Hutong Pedi-cab Tour</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Hutong Pedi-cab Tour</figcaption>
+    </figure>
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Dumpling-Making Class</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Dumpling-Making Class</figcaption>
+    </figure>
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Festival Lanterns</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Festival Lanterns</figcaption>
+    </figure></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;">
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Great Wall Hike</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Great Wall Hike</figcaption>
+    </figure>
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Calligraphy Workshop</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Calligraphy Workshop</figcaption>
+    </figure>
+    <figure style="position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#f2e0d0;">
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Community Service</div>
+      <figcaption style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.55));padding:1.2rem 0.65rem 0.5rem;font-size:0.68rem;font-weight:600;color:#fff;">Community Service</figcaption>
+    </figure></div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section class="section" id="highlights" style="background:#F9F6F2;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Key Experiences</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Program Highlights</h2>
+    </div>
+    <div class="hl-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;">
+    <article style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="aspect-ratio:16/9;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Hutong Pedi-cab Tour & Scavenger Hunt</div></div>
+      <div style="padding:1.1rem;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.35rem;">Cultural Immersion</div>
+        <h3 style="font-family:Georgia,serif;font-size:0.95rem;font-weight:700;color:#1E1E1E;margin-bottom:0.45rem;line-height:1.3;">Hutong Pedi-cab Tour & Scavenger Hunt</h3>
+        <p style="font-size:0.8rem;color:#777;line-height:1.7;">Race through Beijing's ancient alleyways by pedi-cab, then navigate a student-led scavenger hunt through the neighbourhood's hidden courtyards and local life.</p>
+      </div>
+    </article>
+    <article style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="aspect-ratio:16/9;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Forbidden City & Calligraphy Workshop</div></div>
+      <div style="padding:1.1rem;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.35rem;">History</div>
+        <h3 style="font-family:Georgia,serif;font-size:0.95rem;font-weight:700;color:#1E1E1E;margin-bottom:0.45rem;line-height:1.3;">Forbidden City & Calligraphy Workshop</h3>
+        <p style="font-size:0.8rem;color:#777;line-height:1.7;">Explore 600 years of imperial history at the world's largest palace complex, then practice Chinese calligraphy with a local master artist.</p>
+      </div>
+    </article>
+    <article style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="aspect-ratio:16/9;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Great Wall Hike — Mutianyu</div></div>
+      <div style="padding:1.1rem;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.35rem;">Adventure</div>
+        <h3 style="font-family:Georgia,serif;font-size:0.95rem;font-weight:700;color:#1E1E1E;margin-bottom:0.45rem;line-height:1.3;">Great Wall Hike — Mutianyu</h3>
+        <p style="font-size:0.8rem;color:#777;line-height:1.7;">Hike one of the best-preserved sections of the Great Wall with panoramic mountain views. Optional toboggan ride back down for the adventurous.</p>
+      </div>
+    </article></div>
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section class="section" id="itinerary" style="background:#fff;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Day by Day</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;margin-bottom:0.5rem;">Itinerary Overview</h2>
+      <p style="font-size:0.9rem;color:#555;line-height:1.8;max-width:560px;margin-bottom:1rem;">All programs are fully customizable. The schedule below is a representative itinerary — contact us to tailor it to your school's curriculum and goals.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+        <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;margin-right:0.25rem;">Activity Types:</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Culture</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3E8F5;color:#1A5276;border:1px solid #7CB9E8;">Service</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3F5E3;color:#1A5C35;border:1px solid #7EC8A0;">Outdoor</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#E8D3F5;color:#4A235A;border:1px solid #B39DDB;">STEAM</span>
+        <span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5D3E3;color:#7B1A3A;border:1px solid #F48FB1;">Team Building</span>
+      </div>
+    </div>
+    <div>
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      <div style="position:absolute;left:31px;top:56px;bottom:0;width:2px;background:#E5DDD4;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#DC7F34;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px #f2e0d0;">1</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:1px solid #E5DDD4;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.25rem;">Day 1 · Arrival</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">Pedi-cab Tour & Peking Duck Dinner</div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Arrive in Beijing and transfer to your hotel. After settling in, take a pedi-cab tour through the ancient hutong alleyways — weaving past traditional courtyard homes and local life.</p></div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Check in and freshen up at the hotel. Explore the surrounding neighbourhood on foot.</p></div>
+        <div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">End the day with a classic Peking duck dinner at a renowned local restaurant.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;"><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Pedi-cab Hutong Tour</span></div>
+        <div style="display:flex;gap:0.3rem;"><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FCE4EC;color:#C62828;">Dinner</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      <div style="position:absolute;left:31px;top:56px;bottom:0;width:2px;background:#E5DDD4;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#DC7F34;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px #f2e0d0;">2</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:1px solid #E5DDD4;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.25rem;">Day 2 · History & Arts</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">Calligraphy Workshop & Forbidden City</div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Morning calligraphy workshop with a local master — learn the history of Chinese brush writing and create your own artwork to take home.</p></div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Afternoon exploration of the Forbidden City, the world's largest palace complex, through an educational scavenger hunt.</p></div>
+        <div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Group dinner at a local restaurant, sharing highlights from the day.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;"><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Calligraphy Workshop</span><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Forbidden City</span></div>
+        <div style="display:flex;gap:0.3rem;"><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#E8F5E9;color:#2E7D32;">Breakfast</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FFF3E0;color:#E65100;">Lunch</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FCE4EC;color:#C62828;">Dinner</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      <div style="position:absolute;left:31px;top:56px;bottom:0;width:2px;background:#E5DDD4;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#DC7F34;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px #f2e0d0;">3</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:1px solid #E5DDD4;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.25rem;">Day 3 · Community & Food</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">Hutong Scavenger Hunt & Dumpling-Making</div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Student-led scavenger hunt through Beijing's hutong neighbourhoods — interviewing locals, discovering hidden temples, and navigating by map.</p></div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Hands-on dumpling-making class with a local family, followed by a communal meal.</p></div>
+        <div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Square dancing with local residents in the park.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;"><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Dumpling-Making Class</span><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3E8F5;color:#1A5276;border:1px solid #7CB9E8;">Community Surveys</span></div>
+        <div style="display:flex;gap:0.3rem;"><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#E8F5E9;color:#2E7D32;">Breakfast</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FFF3E0;color:#E65100;">Lunch</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FCE4EC;color:#C62828;">Dinner</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      <div style="position:absolute;left:31px;top:56px;bottom:0;width:2px;background:#E5DDD4;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#DC7F34;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px #f2e0d0;">4</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:1px solid #E5DDD4;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.25rem;">Day 4 · Culture & Performance</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">Temple of Heaven & Peking Opera</div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Morning visit to the Temple of Heaven — explore the iconic architecture and join locals for Kung Fu practice in the park.</p></div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Peking Opera workshop: learn the history, practice signature movements, and decorate your own traditional face mask.</p></div>
+        <div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Farewell dinner with the group.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;"><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Temple of Heaven</span><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#F5E6D3;color:#8B4513;border:1px solid #E8A87C;">Peking Opera Workshop</span><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3F5E3;color:#1A5C35;border:1px solid #7EC8A0;">Kung Fu Practice</span><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#E8D3F5;color:#4A235A;border:1px solid #B39DDB;">Face Mask Decoration</span></div>
+        <div style="display:flex;gap:0.3rem;"><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#E8F5E9;color:#2E7D32;">Breakfast</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FFF3E0;color:#E65100;">Lunch</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FCE4EC;color:#C62828;">Dinner</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:64px 1fr;gap:0 1.5rem;position:relative;">
+      
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:1.5rem;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#DC7F34;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;position:relative;z-index:1;box-shadow:0 0 0 4px #f2e0d0;">5</div>
+      </div>
+      <div style="padding:1.5rem 0 2rem;border-bottom:none;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.25rem;">Day 5 · Service & Departure</div>
+        <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#1E1E1E;margin-bottom:0.75rem;">Volunteer & Return Home</div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Morning</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Morning volunteering session at a local orphanage — students engage in activities with the children, leaving a meaningful positive impact.</p></div>
+        <div style="margin-bottom:0.6rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Afternoon</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Final group reflection session to consolidate learning and share highlights.</p></div>
+        <div style="margin-bottom:0.75rem;"><span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:0.2rem;">Evening</span><p style="font-size:0.85rem;color:#555;line-height:1.75;">Transfer to Beijing Capital International Airport for departure.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.5rem;"><span style="font-size:0.68rem;font-weight:600;padding:0.22em 0.65em;border-radius:3px;background:#D3E8F5;color:#1A5276;border:1px solid #7CB9E8;">Orphanage Volunteering</span></div>
+        <div style="display:flex;gap:0.3rem;"><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#E8F5E9;color:#2E7D32;">Breakfast</span><span style="font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2em 0.55em;border-radius:3px;background:#FFF3E0;color:#E65100;">Lunch</span></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- LEARNING OUTCOMES -->
+<section class="section" id="sdgs" style="background:#E6F0F3;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Learning Outcomes</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">UN SDGs in Focus</h2>
+    </div>
+    <div class="sdg-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;">
+    <div style="background:#fff;border-radius:6px;padding:1.4rem;display:flex;align-items:flex-start;gap:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="width:48px;height:48px;border-radius:6px;background:#4C9F38;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1.2rem;font-weight:800;">3</div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4A90A4;margin-bottom:0.2rem;">SDG 3</div>
+        <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:700;color:#1E1E1E;margin-bottom:0.3rem;">Good Health and Well-Being</div>
+        <p style="font-size:0.78rem;color:#777;line-height:1.65;">Kung Fu practice, community health surveys, and volunteering activities promote physical well-being and empathy for vulnerable communities.</p>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:6px;padding:1.4rem;display:flex;align-items:flex-start;gap:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="width:48px;height:48px;border-radius:6px;background:#A21942;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1.2rem;font-weight:800;">8</div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4A90A4;margin-bottom:0.2rem;">SDG 8</div>
+        <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:700;color:#1E1E1E;margin-bottom:0.3rem;">Decent Work and Economic Growth</div>
+        <p style="font-size:0.78rem;color:#777;line-height:1.65;">Visits to local artisans, market interactions, and community surveys give students insight into Beijing's diverse economic landscape.</p>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:6px;padding:1.4rem;display:flex;align-items:flex-start;gap:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="width:48px;height:48px;border-radius:6px;background:#FD9D24;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1.2rem;font-weight:800;">11</div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4A90A4;margin-bottom:0.2rem;">SDG 11</div>
+        <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:700;color:#1E1E1E;margin-bottom:0.3rem;">Sustainable Cities and Communities</div>
+        <p style="font-size:0.78rem;color:#777;line-height:1.65;">Hutong exploration and urban community engagement highlight the balance between preserving cultural heritage and modern city development.</p>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+
+  <section class="section" id="accommodation" style="background:#fff;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Where You'll Stay</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Accommodation</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+        
+        <div style="background:#F9F6F2;border:1px solid #E5DDD4;border-radius:8px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr;gap:0;align-items:stretch;">
+            <div style="padding:1.5rem;">
+              <div style="background:#fff;border-radius:6px;padding:1.2rem;margin-bottom:1rem;border:1px solid #E5DDD4;">
+                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;">
+                  <div style="width:32px;height:32px;border-radius:5px;background:#DC7F34;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div style="font-family:Georgia,serif;font-size:1rem;font-weight:700;color:#1E1E1E;">Novotel Beijing Peace</div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.8rem;color:#555;margin-bottom:0.4rem;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC7F34" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  3 Jinyu Hutong, Dongcheng District, Beijing
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;font-weight:600;color:#DC7F34;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC7F34" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Day 1–5, 4 nights in total
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.78rem;color:#555;margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid #E5DDD4;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC7F34" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  All accommodations have been risk-assessed. WildChina Education Staff will assist with check in upon arrival.
+                </div>
+              </div>
+              <p style="font-size:0.75rem;color:#999;font-style:italic;display:flex;align-items:flex-start;gap:0.4rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                We aim to reserve this hotel or a similar option, subject to availability.
+              </p>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="transportation" style="background:#F9F6F2;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Getting There</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Transportation</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+          <thead>
+            <tr style="background:#DC7F34;">
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Date</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Type</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">No.</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Route</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Departure</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Arrival</th>
+              <th style="padding:0.75rem 1rem;text-align:left;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#fff;">Est. Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr style="border-bottom:1px solid #E5DDD4;background:#fff;">
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#1E1E1E;">Day 1</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>Flight</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#DC7F34;">CA1234</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#1E1E1E;">Shanghai → Beijing</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">08:00</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">10:15</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#DC7F34;">—</td>
+            </tr>
+            <tr style="border-bottom:1px solid #E5DDD4;background:#FDFAF7;">
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#1E1E1E;">Day 5</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px;"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>Flight</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#DC7F34;">CA1235</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#1E1E1E;">Beijing → Shanghai</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">16:30</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;color:#555;">18:45</td>
+              <td style="padding:0.75rem 1rem;font-size:0.82rem;font-weight:600;color:#DC7F34;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="quotation" style="background:#ffffff;">
+    <div class="container">
+      <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+        <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Investment</span>
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Quotation</h2>
+        <p style="font-size:0.95rem;color:#666;line-height:1.8;margin-top:0.6rem;max-width:640px;">Your journey starts in Beijing and ends in Beijing. Your quotation has been prepared for 5 days.</p>
+      </div>
+
+      
+
+      
+    </div>
+  </section>
+
+<!-- EXPLORE MORE -->
+<section class="section" id="explore" style="background:#F9F6F2;">
+  <div class="container">
+    <div style="margin-bottom:clamp(1.5rem,3vw,2.5rem);">
+      <span style="display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.5rem;">Explore More</span>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#1E1E1E;">Other Popular Programs</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+    <a href="https://www.wildchinaeducation.com/program/shanghai-classic-china" style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);display:block;text-decoration:none;">
+      <div style="aspect-ratio:4/3;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Shanghai</div></div>
+      <div style="padding:0.8rem;">
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.2rem;">Shanghai</div>
+        <div style="font-family:Georgia,serif;font-size:0.8rem;font-weight:700;color:#1E1E1E;line-height:1.3;">Classic China: Tradition & Transformation</div>
+      </div>
+    </a>
+    <a href="https://www.wildchinaeducation.com/program/chengdu-city-of-spice" style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);display:block;text-decoration:none;">
+      <div style="aspect-ratio:4/3;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Chengdu</div></div>
+      <div style="padding:0.8rem;">
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.2rem;">Chengdu</div>
+        <div style="font-family:Georgia,serif;font-size:0.8rem;font-weight:700;color:#1E1E1E;line-height:1.3;">City of Spice</div>
+      </div>
+    </a>
+    <a href="https://www.wildchinaeducation.com/program/inner-mongolia-steppe" style="background:#fff;border:1px solid #E5DDD4;border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);display:block;text-decoration:none;">
+      <div style="aspect-ratio:4/3;overflow:hidden;position:relative;"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-style:italic;color:#b8612a;padding:0.5rem;text-align:center;background:#f2e0d0;">Inner Mongolia</div></div>
+      <div style="padding:0.8rem;">
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC7F34;margin-bottom:0.2rem;">Inner Mongolia</div>
+        <div style="font-family:Georgia,serif;font-size:0.8rem;font-weight:700;color:#1E1E1E;line-height:1.3;">Life on the Steppe</div>
+      </div>
+    </a></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:#DC7F34;padding-block:clamp(2.5rem,5vw,4rem);text-align:center;position:relative;overflow:hidden;" id="contact">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.025) 40px,rgba(0,0,0,0.025) 41px);"></div>
+  <div style="position:relative;z-index:1;max-width:620px;margin-inline:auto;padding-inline:1.5rem;">
+    <h2 style="font-family:Georgia,serif;font-size:clamp(1.4rem,3vw,2.1rem);font-weight:700;color:#fff;margin-bottom:0.7rem;">Let us create a custom program for your students.</h2>
+    <p style="font-size:0.95rem;color:rgba(255,255,255,0.85);margin-bottom:1.75rem;line-height:1.7;">Every WildChina Education program is fully tailored to your school's curriculum, schedule, and budget. Our team will work with you from first enquiry to final debrief.</p>
+    <div style="display:flex;justify-content:center;gap:0.9rem;flex-wrap:wrap;">
+      <a href="mailto:education@wildchina.com" style="display:inline-flex;align-items:center;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:#fff;color:#DC7F34;box-shadow:0 2px 8px rgba(0,0,0,0.2);">Contact Us for Full Detail</a>
+      <a href="https://www.wildchinaeducation.com/contact" style="display:inline-flex;align-items:center;font-size:0.8rem;font-weight:700;padding:0.7em 1.6em;border-radius:4px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.8);" target="_blank" rel="noopener">Visit Our Website</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#DC7F34;padding-block:clamp(2rem,4vw,3.5rem);">
+  <div class="container">
+    <div class="ft-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,0.2);">
+      <div>
+        <strong style="font-family:Georgia,serif;display:block;font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">WildChina Education</strong>
+        <p style="font-size:0.78rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:230px;margin-bottom:1.1rem;">Creating life-changing experiences outside of the classroom since 2000. Experiential education programs across China for international schools.</p>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+          <a href="https://www.linkedin.com/company/wildchinaeducation" style="width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff;transition:background 0.2s;" target="_blank" rel="noopener" title="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="https://www.youtube.com/@wildchinaeducation" style="width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:#fff;transition:background 0.2s;" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">Browse Programs</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;"><li><a href="https://www.wildchinaeducation.com" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Programs in China</a></li><li><a href="https://www.wildchinaeducation.com/mba" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">MBA Trips</a></li><li><a href="https://www.wildchinaeducation.com/programs-abroad/" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Programs Abroad</a></li><li><a href="https://www.wildchinaeducation.com/contact-us" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Custom Programs</a></li></ul>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">Useful Info</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;"><li><a href="https://www.wildchinaeducation.com/about-us/" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">About Us</a></li><li><a href="https://www.wildchinaeducation.com/blog" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Blog</a></li><li><a href="https://www.wildchinaeducation.com/job" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Join Our Team</a></li><li><a href="https://www.wildchinaeducation.com/contact-us" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Contact Us</a></li></ul>
+      </div>
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.9rem;">Contact Us</div>
+        <ul style="display:flex;flex-direction:column;gap:0.5rem;"><li><a href="mailto:info@wildchinaeducation.com" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">info@wildchinaeducation.com</a></li><li><a href="https://www.wildchinaeducation.com/contact-us" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">Send an Enquiry</a></li><li><a href="https://wildchina.com/" style="font-size:0.8rem;color:rgba(255,255,255,0.75);">WildChina</a></li></ul>
+        <p style="margin-top:0.75rem;font-size:0.72rem;color:rgba(255,255,255,0.45);">Beijing · Shanghai · Chengdu · Hong Kong</p>
+      </div>
+    </div>
+    <div style="padding-top:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.7rem;color:rgba(255,255,255,0.5);">
+      <span>© 2026 WildChina Education. All rights reserved.</span>
+      <span>
+        <a href="https://www.wildchinaeducation.com/terms" style="color:rgba(255,255,255,0.65);">Terms</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.wildchinaeducation.com/privacy" style="color:rgba(255,255,255,0.65);">Privacy Policy</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
